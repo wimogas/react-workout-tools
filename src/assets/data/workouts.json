@@ -1,0 +1,35 @@
+{
+    "rest": 40,
+    "exercises": [
+      {
+        "name": "Deadlift",
+        "sets": 10,
+        "reps": 10,
+        "weight": 24
+      },
+      {
+        "name": "Calf raises",
+        "sets": 10,
+        "reps": 10,
+        "weight": 24
+      },
+      {
+        "name": "Rear Delt Fly",
+        "sets": 5,
+        "reps": 10,
+        "weight": 8
+      },
+      {
+        "name": "Bench press",
+        "sets": 5,
+        "reps": 10,
+        "weight": 24
+      },
+      {
+        "name": "Shoulder press",
+        "sets": 5,
+        "reps": 10,
+        "weight": 24
+      }
+    ]
+}
