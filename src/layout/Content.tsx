@@ -11,7 +11,7 @@ return (
     <Block
         size={500}
         column
-        style={{padding: '42px 24px', margin: '78px 24px 0 24px', width: '100%'}}
+        style={{padding: '0 24px 42px 24px', margin: '78px 24px 0 24px', width: '100%'}}
     >
         {children}
     </Block>

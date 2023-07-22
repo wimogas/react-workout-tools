@@ -1,31 +1,41 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import {Block, Button, Text} from 'react-barebones-ts'
+
+import ArrowRight from "../assets/icons/arrow-right-s-line.svg";
+import ArrowLeft from "../assets/icons/arrow-left-s-line.svg";
 
 import data from '../assets/data/workouts.json';
+import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
 
 import AppWrapper from "../layout/AppWrapper";
-import {Block, Button, Modal, Text} from 'react-barebones-ts'
-import {Simulate} from "react-dom/test-utils";
-import pause = Simulate.pause;
+import RestModal from "../components/RestModal";
+import Exercise from "../components/Exercise";
 
 const HomePage = () => {
-    const [active, setActive] = useState(data.exercises[0].name)
+    const today = getDayOfTheWeek();
+    const program = "my plan"
+
+    const [date, setDate] = useState(today);
+    const [exerciseList, setExerciseList] = useState(data.programs[program].workouts[date].exercises)
+    const [active, setActive] = useState(exerciseList.length > 0 ? exerciseList[0].name : '')
+    const [activeSet, setActiveSet] = useState(0)
     const [done, setDone] = useState<any>([])
-    const [activeSet, setActiveSet] = useState(1)
     const [restModal, setRestModal] = useState(false)
-    const [restTimer, setRestTimer] = useState(data.rest)
     const [completed, setCompleted] = useState(false);
-    const [pauseTimer, setPauseTimer] = useState(false);
+
+
     const handleSetButtonAction = (sets: number, i: number) => {
+        setRestModal(true);
         setActiveSet(i + 1);
-        if ((sets - 1) === i) {
-            setActiveSet(1)
-            const index = data.exercises.findIndex((exercise: any) => exercise.name === active);
-            if (index < data.exercises.length - 1) {
-                setActive(() => data.exercises[index + 1].name);
-                if(done) {
-                    setDone((old: any) => [...old, data.exercises[index].name])
+        if ((sets - 1) === i && exerciseList.length > 0) {
+            setActiveSet(0)
+            const index = exerciseList.findIndex((exercise: any) => exercise.name === active);
+            if (index < exerciseList.length - 1) {
+                setActive(() => exerciseList[index + 1].name);
+                if (done) {
+                    setDone((old: any) => [...old, exerciseList[index].name])
                 } else {
-                    setDone([data.exercises[index].name])
+                    setDone([exerciseList[index].name])
                 }
             } else {
                 setCompleted(true);
@@ -33,80 +43,54 @@ const HomePage = () => {
         }
     }
 
-    const setBuilder = (workout: any) => {
-        let setArray = [];
-        for (let i = 0; i < workout.sets; i++) {
-            setArray.push(<Button key={`${workout.name}${i + 1}`} variant={active === workout.name && activeSet === (i + 1) ? 'primary' : 'secondary'} disabled={done.includes(workout.name) || active === workout.name && activeSet > (i + 1)} action={() => handleSetButtonAction(workout.sets, i)}>{`${i + 1}`}</Button>);
-        }
-        return setArray;
-    }
-
     const handleShowRestModal = () => {
-        setRestTimer(data.rest);
         setRestModal(!restModal);
     }
 
-    useEffect(() => {
-        if(restModal && !pauseTimer) {
-            let restTimeout: any;
-            if (restTimer > 0) {
-                restTimeout = setTimeout(() => {
-                    setRestTimer((old: any) => old - 1)
-                }, 1000)
-            } else {
-                setRestModal(false)
-                setRestTimer(data.rest)
-            }
-            return () => {
-                clearTimeout(restTimeout)
-            }
+    const handleShowNextDay = () => {
+        const tomorrow = getTomorrow(date);
+        setDate(tomorrow);
+        if (data.programs[program].workouts[tomorrow].exercises.length > 0) {
+            setExerciseList(data.programs[program].workouts[tomorrow].exercises)
+        } else {
+            setExerciseList([])
         }
-    }, [restTimer, restModal, pauseTimer])
+    }
+
+    const handleShowPrevDay = () => {
+        const yesterday = getYesterday(date);
+        setDate(yesterday);
+        if (data.programs[program].workouts[yesterday].exercises.length > 0) {
+            setExerciseList(data.programs[program].workouts[yesterday].exercises)
+        } else {
+            setExerciseList([])
+        }
+    }
 
     return (
         <AppWrapper>
-            <Block column align={'flex-start'} size={500}>
+            <Block column align={'flex-start'} size={900}>
                 <Block justify={'space-between'} style={{"width": "100%"}}>
-                    <Text type={'h1'} text={"SATURDAY"}/>
-                    <Button variant={'primary'} action={handleShowRestModal}>
-                        REST!
-                    </Button>
+                    <Button variant={'secondary'} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
+                    <Text type={'h1'} text={date}/>
+                    <Button variant={'secondary'} icon={<ArrowRight/>} action={handleShowNextDay}/>
                 </Block>
-                {restModal && <Modal close={handleShowRestModal} title={"Rest"}>
-                    <Block justify={'center'}>
-                        <Text text={restTimer} color={'default'} type={'h1'} style={{"fontSize": "80px", "lineHeight": "60px"}}/>
-                    </Block>
-                    <Block justify={'center'} size={500}>
-                        <Button action={() => setRestTimer(data.rest)}>Restart</Button>
-                        <Button action={() => setPauseTimer(!pauseTimer)}>{pauseTimer ? 'Resume' : 'Pause'}</Button>
-                        <Button action={handleShowRestModal}>Stop</Button>
-                    </Block>
-                </Modal>}
+                {restModal && <RestModal action={handleShowRestModal}/>}
 
-                {completed && <Text type={'h1'} color={'success'} text={"WORKOUT COMPLETED!"}/>}
-                <Block column size={800}>
-                {!completed && data.exercises.map((workout: any) => {
-                    const returnedSets = setBuilder(workout);
-                    return (
-                        <Block key={workout.name} column size={300}>
-                        <Text type={'h1'} text={workout.name} color={(active === workout.name) ? 'success' : 'disabled'}/>
-                            <Block size={300}>
-                                <Text type={'p'} text={'Reps: ' + workout.reps}/>
-                                <Text type={'p'} text={'Weight: ' + workout.weight}/>
-                            </Block>
-                           <Block size={200}>
-                                {returnedSets.map((set: any) => {
-                                    return (
-                                        <span key={set.key}>
-                                            {set}
-                                        </span>
-                                    )
-                                })}
-                            </Block>
-                        </Block>
-                    )
+                <Block column size={700}>
+                {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
+                    return <Exercise
+                        key={exercise.name}
+                        exercise={exercise}
+                        active={active}
+                        activeSet={activeSet}
+                        done={done}
+                        handleSetButtonAction={handleSetButtonAction}/>
                 })}
                 </Block>
+                {exerciseList.length <= 0 && <Block justify={'center'} style={{"width":"100%"}}>
+                    <Text type={'h2'} text={"No exercises found for today"}/>
+                </Block>}
             </Block>
         </AppWrapper>
     );

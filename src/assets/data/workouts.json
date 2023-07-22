@@ -1,35 +1,148 @@
 {
     "rest": 40,
-    "exercises": [
-      {
-        "name": "Deadlift",
-        "sets": 10,
-        "reps": 10,
-        "weight": 24
-      },
-      {
-        "name": "Calf raises",
-        "sets": 10,
-        "reps": 10,
-        "weight": 24
-      },
-      {
-        "name": "Rear Delt Fly",
-        "sets": 5,
-        "reps": 10,
-        "weight": 8
-      },
-      {
-        "name": "Bench press",
-        "sets": 5,
-        "reps": 10,
-        "weight": 24
-      },
-      {
-        "name": "Shoulder press",
-        "sets": 5,
-        "reps": 10,
-        "weight": 24
+    "programs": {
+      "my plan": {
+        "workouts": {
+          "Monday": {
+            "exercises": [
+              {
+                "name": "Squat",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Bench press",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Reverse chest fly",
+                "sets": 5,
+                "reps": 10,
+                "weight": 8
+              },
+              {
+                "name": "Upright row",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Shoulder press",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Shrugs",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              }
+            ]
+          },
+          "Tuesday": {
+            "exercises": []
+          },
+          "Wednesday": {
+            "exercises": [
+              {
+                "name": "Tricep extension",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Bicep curls",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Bent-over row",
+                "sets": 10,
+                "reps": 10,
+                "weight": 8
+              },
+              {
+                "name": "Shrugs",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              }
+            ]
+          },
+          "Thursday": {
+            "exercises": []
+          },
+          "Friday": {
+            "exercises": [
+              {
+                "name": "Tricep extension",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Bicep curl",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Pullover",
+                "sets": 5,
+                "reps": 10,
+                "weight": 12
+              },
+              {
+                "name": "Bent-over row",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              }
+            ]
+          },
+          "Saturday": {
+            "exercises": [
+              {
+                "name": "Deadlift",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Calf raises",
+                "sets": 10,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Rear Delt Fly",
+                "sets": 5,
+                "reps": 10,
+                "weight": 8
+              },
+              {
+                "name": "Bench press",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              },
+              {
+                "name": "Shoulder press",
+                "sets": 5,
+                "reps": 10,
+                "weight": 24
+              }
+            ]
+          },
+          "Sunday": {
+            "exercises": []
+          }
+        }
       }
-    ]
+    }
 }
