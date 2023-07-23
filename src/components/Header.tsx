@@ -6,17 +6,18 @@ import ArrowLeft from "../assets/icons/arrow-left-s-line.svg";
 import {Block, Button, Text} from "react-barebones-ts";
 
 type HeaderProps = {
+    dark: boolean,
     date: string,
     handleShowPrevDay: () => void,
     handleShowNextDay: () => void
 }
 
-const Header = ({date, handleShowPrevDay, handleShowNextDay}: HeaderProps) => {
+const Header = ({dark, date, handleShowPrevDay, handleShowNextDay}: HeaderProps) => {
     return (
         <Block justify={'space-between'} classes={'bb-w-100'}>
-            <Button variant={'secondary'} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
-            <Text type={'h1'} text={date}/>
-            <Button variant={'secondary'} icon={<ArrowRight/>} action={handleShowNextDay}/>
+            <Button variant={dark ? 'tertiary' : 'secondary'} dark={dark} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
+            <Text type={'h1'} color={'secondary'} dark={dark} text={date}/>
+            <Button variant={dark ? 'tertiary' : 'secondary'} dark={dark} icon={<ArrowRight/>} action={handleShowNextDay}/>
         </Block>
     );
 }

@@ -1,7 +1,9 @@
-import React, {ReactComponentElement} from "react";
+import React, {ReactComponentElement, useContext} from "react";
 
 import Content from "./Content";
 import Nav from "./Nav";
+
+import {ThemeContext} from "../store/theme-context";
 
 import './AppWrapper.scss'
 
@@ -12,15 +14,19 @@ type ContentProps = {
 }
 const AppWrapper = ({children}: ContentProps) => {
 
+    const themeCtx = useContext(ThemeContext);
+
     return(
-        <>
-        <Nav/>
-            <Block classes={'app-wrapper-container'}>
+        <Block column>
+            <Nav/>
+            <Block style={{
+                "backgroundColor" : themeCtx.dark ? "var(--color-primary-darker)" : "white",
+                "minHeight": "calc(100vh - 66px)"}}>
                 <Content>
                     {children}
                 </Content>
             </Block>
-        </>
+        </Block>
     )
 }
 

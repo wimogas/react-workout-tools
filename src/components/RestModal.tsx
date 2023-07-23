@@ -39,9 +39,9 @@ const RestModal = ({action}: RestModalProps) => {
                     <Text text={restTimer} color={'default'} type={'h1'} style={{"fontSize": "80px", "lineHeight": "60px"}}/>
                 </Block>
                 <Block justify={'center'} size={500}>
-                    <Button variant={'icon-only'} icon={<ResetIcon/>} iconSize={24} action={() => setRestTimer(data.rest)}/>
-                    <Button variant={'icon-only'} icon={pauseTimer ? <PlayIcon/> : <PauseIcon/>} iconSize={24} action={() => setPauseTimer(!pauseTimer)}/>
-                    <Button variant={'icon-only'} icon={<StopIcon/>} iconSize={24} action={action}/>
+                    <Button variant={'secondary'} icon={<ResetIcon/>} iconSize={24} action={() => setRestTimer(data.rest)}/>
+                    <Button variant={'secondary'} icon={pauseTimer ? <PlayIcon/> : <PauseIcon/>} iconSize={24} action={() => setPauseTimer(!pauseTimer)}/>
+                    <Button variant={'secondary'} icon={<StopIcon/>} iconSize={24} action={action}/>
                 </Block>
             </Block>
         </Modal>

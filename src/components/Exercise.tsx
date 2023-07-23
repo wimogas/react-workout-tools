@@ -1,8 +1,8 @@
 import React from "react";
 import {Block, Button, Text} from "react-barebones-ts";
-import data from "../assets/data/workouts.json";
 
 type ExerciseProps = {
+    dark: boolean,
     exercise: any,
     done: any,
     active: string,
@@ -11,14 +11,14 @@ type ExerciseProps = {
 
 }
 
-const Exercise = ({exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
+const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
 
     const setBuilder = (exercise: any) => {
         let setArray = [];
         for (let i = 0; i < exercise.sets; i++) {
             setArray.push(
-                <Button key={i}
-                        variant={active === exercise.name && activeSet === i ? 'primary' : 'secondary'}
+                <Button dark={dark} key={i}
+                        variant={active === exercise.name && activeSet === i ? 'primary' : dark ? 'tertiary' : 'secondary'}
                         disabled={done.includes(exercise.name) || active === exercise.name && activeSet > i || active !== exercise.name}
                         action={() => handleSetButtonAction(exercise.sets, i)}>
                     {`${i + 1}`}
@@ -31,10 +31,10 @@ const Exercise = ({exercise, done, active, activeSet, handleSetButtonAction}: Ex
 
     return (
         <Block key={exercise.name} column size={300}>
-            <Text type={'h1'} text={exercise.name} color={(active === exercise.name) ? 'success' : 'disabled'}/>
+            <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'success' : 'disabled'}/>
             <Block size={300}>
-                <Text type={'p'} text={'Reps: ' + exercise.reps}/>
-                <Text type={'p'} text={'Weight: ' + exercise.weight}/>
+                <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Reps: ' + exercise.reps}/>
+                <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Weight: ' + exercise.weight}/>
             </Block>
             <Block size={200}>
                 {returnedSets.map((set: any) => {

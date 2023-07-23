@@ -1,5 +1,7 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Block, Button, Text} from 'react-barebones-ts'
+
+import {ThemeContext} from "../store/theme-context";
 
 
 import data from '../assets/data/workouts.json';
@@ -11,7 +13,10 @@ import Exercise from "../components/Exercise";
 import Header from "../components/Header";
 
 const HomePage = () => {
-    const today = getDayOfTheWeek();
+
+    const themeCtx = useContext(ThemeContext);
+
+    const today = "Saturday";
     const program = "my plan"
 
     const [date, setDate] = useState(today);
@@ -64,11 +69,12 @@ const HomePage = () => {
     return (
         <AppWrapper>
             <Block column align={'flex-start'} size={900}>
-                <Header date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
+                <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
                 <Block column size={700}>
                 {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
                     return <Exercise
+                        dark={themeCtx.dark}
                         key={exercise.name}
                         exercise={exercise}
                         active={active}
