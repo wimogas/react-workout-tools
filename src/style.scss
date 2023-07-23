@@ -1,33 +1,3 @@
-:root {
-
-    --size-xs: 4px;
-    --size-s: 12px;
-    --size-m: 24px;
-    --size-l: 42px;
-    --size-xl: 64px;
-
-    --color-primary: rgb(20, 149, 235);
-    --color-primary-light: rgb(109, 195, 252);
-    --color-primary-lighter: rgb(72, 171, 238);
-    --color-primary-dark: rgb(11, 87, 138);
-    --color-primary-darker: rgb(4, 9, 34);
-    --color-primary-darkest: rgb(5, 4, 20);
-
-    --color-secondary: rgb(93, 93, 93);
-    --color-secondary-lightest: rgb(236, 236, 236);
-    --color-secondary-light: rgb(189, 189, 189);
-    --color-secondary-lighter: rgb(218, 218, 218);
-    --color-secondary-dark: rgb(77, 77, 77);
-    --color-secondary-darker: rgb(54, 54, 54);
-
-    --color-error: rgb(202, 57, 38);
-    --color-error-light: rgb(176, 61, 45);
-    --color-error-lightest: rgb(253, 234, 233);
-    --color-success: rgb(24, 153, 73);
-    --color-success-light: rgb(64, 182, 108);
-    --color-success-lightest: rgb(223, 250, 233);
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -40,23 +10,5 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     line-height: 20px;
-    color: white;
-    background-color: var(--color-primary-darkest);
     min-width: 420px;
-}
-
-a {
-    color: var(--color-primary);
-    text-decoration: none;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-button a {
-    color: white;
 }

@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import {Block, Button, Text} from 'react-barebones-ts'
 
-import ArrowRight from "../assets/icons/arrow-right-s-line.svg";
-import ArrowLeft from "../assets/icons/arrow-left-s-line.svg";
 
 import data from '../assets/data/workouts.json';
 import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
@@ -10,6 +8,7 @@ import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
 import AppWrapper from "../layout/AppWrapper";
 import RestModal from "../components/RestModal";
 import Exercise from "../components/Exercise";
+import Header from "../components/Header";
 
 const HomePage = () => {
     const today = getDayOfTheWeek();
@@ -21,9 +20,6 @@ const HomePage = () => {
     const [activeSet, setActiveSet] = useState(0)
     const [done, setDone] = useState<any>([])
     const [restModal, setRestModal] = useState(false)
-    const [completed, setCompleted] = useState(false);
-
-
     const handleSetButtonAction = (sets: number, i: number) => {
         setRestModal(true);
         setActiveSet(i + 1);
@@ -37,8 +33,6 @@ const HomePage = () => {
                 } else {
                     setDone([exerciseList[index].name])
                 }
-            } else {
-                setCompleted(true);
             }
         }
     }
@@ -70,13 +64,8 @@ const HomePage = () => {
     return (
         <AppWrapper>
             <Block column align={'flex-start'} size={900}>
-                <Block justify={'space-between'} style={{"width": "100%"}}>
-                    <Button variant={'secondary'} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
-                    <Text type={'h1'} text={date}/>
-                    <Button variant={'secondary'} icon={<ArrowRight/>} action={handleShowNextDay}/>
-                </Block>
+                <Header date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
-
                 <Block column size={700}>
                 {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
                     return <Exercise
@@ -88,8 +77,9 @@ const HomePage = () => {
                         handleSetButtonAction={handleSetButtonAction}/>
                 })}
                 </Block>
-                {exerciseList.length <= 0 && <Block justify={'center'} style={{"width":"100%"}}>
-                    <Text type={'h2'} text={"No exercises found for today"}/>
+                {exerciseList.length <= 0 &&
+                    <Block justify={'center'} classes={'bb-w-100'}>
+                        <Text type={'h2'} text={"No exercises found for today"}/>
                 </Block>}
             </Block>
         </AppWrapper>

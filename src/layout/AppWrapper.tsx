@@ -3,6 +3,8 @@ import React, {ReactComponentElement} from "react";
 import Content from "./Content";
 import Nav from "./Nav";
 
+import './AppWrapper.scss'
+
 import {Block} from 'react-barebones-ts'
 
 type ContentProps = {
@@ -13,7 +15,7 @@ const AppWrapper = ({children}: ContentProps) => {
     return(
         <>
         <Nav/>
-            <Block>
+            <Block classes={'app-wrapper-container'}>
                 <Content>
                     {children}
                 </Content>

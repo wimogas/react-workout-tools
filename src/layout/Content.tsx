@@ -11,7 +11,8 @@ return (
     <Block
         size={500}
         column
-        style={{padding: '0 24px 42px 24px', margin: '78px 24px 0 24px', width: '100%'}}
+        classes={'bb-pb-900 bb-mx-600 bb-w-100'}
+        style={{"marginTop": "78px"}}
     >
         {children}
     </Block>
