@@ -1,5 +1,7 @@
 import React from "react";
-import {Block, Button, Text} from "react-barebones-ts";
+import {Block, Button, Icon, Text} from "react-barebones-ts";
+
+import CheckLine from "../assets/icons/check-line.svg";
 
 type ExerciseProps = {
     dark: boolean,
@@ -8,7 +10,6 @@ type ExerciseProps = {
     active: string,
     activeSet: number,
     handleSetButtonAction: (sets: number, i: number) => void
-
 }
 
 const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
@@ -36,10 +37,11 @@ const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonActio
             key={exercise.name}
             column
             size={300}
-            style={{
-                "opacity": active !== exercise.name && "0.8"
-            }}>
-            <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'success' : 'disabled'}/>
+            >
+            <Block size={400} align={'center'}>
+                <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'primary' : done.includes(exercise.name) ? 'success' : 'disabled'}/>
+                {done.includes(exercise.name) && <Icon icon={<CheckLine/>} size={20} color={'#189949'}/>}
+            </Block>
             <Block size={300}>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Reps: ' + exercise.reps}/>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Weight: ' + exercise.weight}/>

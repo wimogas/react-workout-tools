@@ -78,7 +78,7 @@ const HomePage = () => {
             <Block column align={'flex-start'} size={900}>
                 <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
-                {completedModal && <Modal title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
+                {completedModal && <Modal dark={themeCtx.dark} title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
 
                 <Block column size={700}>
                 {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
