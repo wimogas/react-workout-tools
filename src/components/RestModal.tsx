@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Block, Button, Modal, Text} from "react-barebones-ts";
 
 import data from "../assets/data/workouts.json";
+
+import {ThemeContext} from "../store/theme-context";
 
 import ResetIcon from "../assets/icons/refresh-line.svg";
 import PlayIcon from "../assets/icons/play-line.svg";
@@ -12,6 +14,8 @@ type RestModalProps = {
     action: () => void
 }
 const RestModal = ({action}: RestModalProps) => {
+
+    const themeCtx = useContext(ThemeContext);
     const [restTimer, setRestTimer] = useState(data.rest)
     const [pauseTimer, setPauseTimer] = useState(false);
 
@@ -32,16 +36,15 @@ const RestModal = ({action}: RestModalProps) => {
         }
     }, [restTimer, pauseTimer])
     return (
-        <Modal close={action} title={"Rest"}>
+        <Modal dark={themeCtx.dark} close={action} title={"Rest"}>
             <Block column size={500}>
-
                 <Block justify={'center'}>
-                    <Text text={restTimer} color={'default'} type={'h1'} style={{"fontSize": "80px", "lineHeight": "60px"}}/>
+                    <Text dark={themeCtx.dark} text={restTimer} color={'default'} type={'h1'} style={{"fontSize": "80px", "lineHeight": "60px"}}/>
                 </Block>
                 <Block justify={'center'} size={500}>
-                    <Button variant={'secondary'} icon={<ResetIcon/>} iconSize={24} action={() => setRestTimer(data.rest)}/>
-                    <Button variant={'secondary'} icon={pauseTimer ? <PlayIcon/> : <PauseIcon/>} iconSize={24} action={() => setPauseTimer(!pauseTimer)}/>
-                    <Button variant={'secondary'} icon={<StopIcon/>} iconSize={24} action={action}/>
+                    <Button dark={themeCtx.dark} variant={'icon-only'} icon={<ResetIcon/>} iconSize={24} action={() => setRestTimer(data.rest)}/>
+                    <Button dark={themeCtx.dark} variant={'icon-only'} icon={pauseTimer ? <PlayIcon/> : <PauseIcon/>} iconSize={24} action={() => setPauseTimer(!pauseTimer)}/>
+                    <Button dark={themeCtx.dark} variant={'icon-only'} icon={<StopIcon/>} iconSize={24} action={action}/>
                 </Block>
             </Block>
         </Modal>

@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Block, Button, Text} from 'react-barebones-ts'
+import {Block, Button, Modal, Text} from 'react-barebones-ts'
 
 import {ThemeContext} from "../store/theme-context";
 
@@ -16,7 +16,7 @@ const HomePage = () => {
 
     const themeCtx = useContext(ThemeContext);
 
-    const today = "Saturday";
+    const today = getDayOfTheWeek();
     const program = "my plan"
 
     const [date, setDate] = useState(today);
@@ -25,6 +25,8 @@ const HomePage = () => {
     const [activeSet, setActiveSet] = useState(0)
     const [done, setDone] = useState<any>([])
     const [restModal, setRestModal] = useState(false)
+    const [completedModal, setCompletedModal] = useState(false)
+
     const handleSetButtonAction = (sets: number, i: number) => {
         setRestModal(true);
         setActiveSet(i + 1);
@@ -38,6 +40,11 @@ const HomePage = () => {
                 } else {
                     setDone([exerciseList[index].name])
                 }
+            } else {
+                setRestModal(false)
+                setActive('');
+                setDone([]);
+                setCompletedModal(true);
             }
         }
     }
@@ -71,6 +78,8 @@ const HomePage = () => {
             <Block column align={'flex-start'} size={900}>
                 <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
+                {completedModal && <Modal title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
+
                 <Block column size={700}>
                 {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
                     return <Exercise

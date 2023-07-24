@@ -5,8 +5,6 @@ import Nav from "./Nav";
 
 import {ThemeContext} from "../store/theme-context";
 
-import './AppWrapper.scss'
-
 import {Block} from 'react-barebones-ts'
 
 type ContentProps = {

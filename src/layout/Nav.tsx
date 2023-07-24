@@ -17,16 +17,21 @@ const Nav = () => {
     }
 
     return (
-        <Block classes={'bb-px-600 bb-py-400 bb-w-100'} align={'center'} justify={'space-between'} style={{
-            "backgroundColor": themeCtx.dark ? "var(--color-primary-darkest)" : "var(--color-primary-darker)"
-        }}>
+        <Block
+            classes={'bb-px-600 bb-py-400 bb-w-100'}
+           align={'center'} justify={'space-between'}
+           style={{
+                "backgroundColor": themeCtx.dark ? "var(--color-primary-darkest)" : "var(--color-primary-darker)",
+               "height": "66px",
+            }}
+        >
             <Block size={300}>
                 <Link to="/">
                     <Text color={'secondary'} dark text={'WORKOUT TOOLS'}/>
                 </Link>
             </Block>
             <Block>
-                <Button variant={'tertiary'} iconSize={16} icon={themeCtx.dark ? <SunIcon/> : <MoonIcon/>}dark action={handleThemeToggle}/>
+                <Button variant={'icon-only'} iconSize={20} icon={themeCtx.dark ? <SunIcon/> : <MoonIcon/>}dark action={handleThemeToggle}/>
             </Block>
         </Block>
     );

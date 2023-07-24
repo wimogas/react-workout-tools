@@ -15,9 +15,9 @@ type HeaderProps = {
 const Header = ({dark, date, handleShowPrevDay, handleShowNextDay}: HeaderProps) => {
     return (
         <Block justify={'space-between'} classes={'bb-w-100'}>
-            <Button variant={dark ? 'tertiary' : 'secondary'} dark={dark} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
+            <Button variant={'icon-only'} iconSize={32} dark={dark} icon={<ArrowLeft/>} action={handleShowPrevDay}/>
             <Text type={'h1'} color={'secondary'} dark={dark} text={date}/>
-            <Button variant={dark ? 'tertiary' : 'secondary'} dark={dark} icon={<ArrowRight/>} action={handleShowNextDay}/>
+            <Button variant={'icon-only'} iconSize={32} dark={dark} icon={<ArrowRight/>} action={handleShowNextDay}/>
         </Block>
     );
 }

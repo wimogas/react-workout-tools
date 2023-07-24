@@ -18,9 +18,11 @@ const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonActio
         for (let i = 0; i < exercise.sets; i++) {
             setArray.push(
                 <Button dark={dark} key={i}
-                        variant={active === exercise.name && activeSet === i ? 'primary' : dark ? 'tertiary' : 'secondary'}
+                        variant={active === exercise.name && activeSet === i ? 'primary' : 'tertiary'}
                         disabled={done.includes(exercise.name) || active === exercise.name && activeSet > i || active !== exercise.name}
-                        action={() => handleSetButtonAction(exercise.sets, i)}>
+                        action={() => handleSetButtonAction(exercise.sets, i)}
+                        classes={'bb-justify-center'}
+                        style={{"minWidth": "50px"}}>
                     {`${i + 1}`}
                 </Button>);
         }
@@ -30,7 +32,13 @@ const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonActio
     const returnedSets = setBuilder(exercise);
 
     return (
-        <Block key={exercise.name} column size={300}>
+        <Block
+            key={exercise.name}
+            column
+            size={300}
+            style={{
+                "opacity": active !== exercise.name && "0.8"
+            }}>
             <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'success' : 'disabled'}/>
             <Block size={300}>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Reps: ' + exercise.reps}/>
