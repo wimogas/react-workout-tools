@@ -6,7 +6,7 @@
           "Monday": {
             "exercises": [
               {
-                "name": "Squat",
+                "name": "Squat / Hip Thrust / Bulgarian",
                 "sets": 10,
                 "reps": 10,
                 "weight": 24
@@ -108,7 +108,7 @@
           "Saturday": {
             "exercises": [
               {
-                "name": "Deadlift",
+                "name": "Deadlift / RDL / Good morning",
                 "sets": 10,
                 "reps": 10,
                 "weight": 24

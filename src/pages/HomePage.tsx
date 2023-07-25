@@ -1,8 +1,7 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Modal, Text} from 'react-barebones-ts'
 
 import {ThemeContext} from "../store/theme-context";
-
 
 import data from '../assets/data/workouts.json';
 import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
@@ -12,7 +11,11 @@ import RestModal from "../components/RestModal";
 import Exercise from "../components/Exercise";
 import Header from "../components/Header";
 
+import userContext from "../store/user-context";
+
 const HomePage = () => {
+
+    const userCtx = useContext(userContext);
 
     const themeCtx = useContext(ThemeContext);
 
@@ -76,6 +79,7 @@ const HomePage = () => {
     return (
         <AppWrapper>
             <Block column align={'flex-start'} size={900}>
+                {userCtx && userCtx.user.name !== '' ? <Text type={'h3'} color={'secondary'} dark={themeCtx.dark} text={`Hello, ${userCtx.user.name}`}/> : ''}
                 <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
                 {completedModal && <Modal dark={themeCtx.dark} title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
