@@ -1,7 +1,14 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Modal, Text} from 'react-barebones-ts'
+import {app} from "../firebase";
+
+import {
+    getFirestore, getDoc, doc,
+    query, where, getDocs, collection
+} from '@firebase/firestore/lite';
 
 import {ThemeContext} from "../store/theme-context";
+import userContext from "../store/user-context";
 
 import data from '../assets/data/workouts.json';
 import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
@@ -11,7 +18,8 @@ import RestModal from "../components/RestModal";
 import Exercise from "../components/Exercise";
 import Header from "../components/Header";
 
-import userContext from "../store/user-context";
+import Spinner from "../components/spinner/Spinner";
+
 
 const HomePage = () => {
 
@@ -21,14 +29,18 @@ const HomePage = () => {
 
     const today = getDayOfTheWeek();
     const program = "my plan"
-
     const [date, setDate] = useState(today);
-    const [exerciseList, setExerciseList] = useState(data.programs[program].workouts[date].exercises)
+
+    const MOCK_DATA = data.programs[program].workouts[date].exercises;
+
+    const [exerciseList, setExerciseList] = useState(MOCK_DATA)
     const [active, setActive] = useState(exerciseList.length > 0 ? exerciseList[0].name : '')
     const [activeSet, setActiveSet] = useState(0)
     const [done, setDone] = useState<any>([])
     const [restModal, setRestModal] = useState(false)
     const [completedModal, setCompletedModal] = useState(false)
+
+    const [loading, setLoading] = useState(false)
 
     const handleSetButtonAction = (sets: number, i: number) => {
         setRestModal(true);
@@ -76,6 +88,23 @@ const HomePage = () => {
         }
     }
 
+    const handleGetWorkoutPlan = async () => {
+        const firestore = getFirestore(app);
+        let currentPlan = '';
+        const docRef = doc(firestore, `users/${userCtx.user.id}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+           currentPlan = docSnap.data().currentPlan
+        }
+        const q = query(collection(firestore, "plans"), where("name", "==", currentPlan), where("user_id", "==", userCtx.user.id));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            setExerciseList(doc.data().week[today].exercises);
+            setLoading(false);
+        });
+    }
+
     return (
         <AppWrapper>
             <Block column align={'flex-start'} size={900}>
@@ -85,7 +114,8 @@ const HomePage = () => {
                 {completedModal && <Modal dark={themeCtx.dark} title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
 
                 <Block column size={700}>
-                {exerciseList.length > 0 && exerciseList.map((exercise: any) => {
+                {loading && <Spinner />}
+                {!loading && exerciseList.length > 0 && exerciseList.map((exercise: any) => {
                     return <Exercise
                         dark={themeCtx.dark}
                         key={exercise.name}

@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {Link, Navigate} from "react-router-dom";
 import {Button, Block, Input, Alert, Text} from 'react-barebones-ts'
 
-import {  createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {createUserWithEmailAndPassword, onAuthStateChanged, updateProfile} from 'firebase/auth';
 import { auth } from '../firebase';
+
+import userContext, {User} from "../store/user-context";
 
 import AuthWrapper from "../layout/AuthWrapper";
 import Spinner from "../components/spinner/Spinner";
@@ -15,6 +17,8 @@ type UserForm = {
     password_confirm: string,
 }
 const Register = () => {
+
+    const userCtx = useContext(userContext)
 
     const [user, setUser] = useState<UserForm>(
         {
@@ -81,7 +85,7 @@ const Register = () => {
     }
 
     if (redirect) {
-        return <Navigate to={'/login'}/>
+        return <Navigate to={'/'}/>
     }
 
     return (

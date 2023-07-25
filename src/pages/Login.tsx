@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {Link, Navigate} from "react-router-dom";
 import {Button, Block, Input, Alert, Text} from 'react-barebones-ts'
-import {signInWithEmailAndPassword, signInWithPopup, setPersistence, browserLocalPersistence, onAuthStateChanged  } from 'firebase/auth';
-import { auth, googleProvider } from '../firebase';
+import {signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged  } from 'firebase/auth';
+import { auth } from '../firebase';
 
 import userContext, {User} from "../store/user-context";
 
@@ -59,6 +59,7 @@ const Login = () => {
                             id: userNow.uid
                         }
                         if (userCtx) userCtx.updateUser(currentUser)
+                        setRedirect(true)
                     }
 
                 })
@@ -69,18 +70,6 @@ const Login = () => {
                 });
         })
     }
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                userCtx.updateUser({
-                    name: user.displayName,
-                    id: user.uid
-                })
-                setRedirect(true)
-            }
-        })
-    }, [userCtx.user])
 
     if (redirect) {
         return <Navigate to={'/'}/>

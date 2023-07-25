@@ -2,12 +2,14 @@ import React from "react";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import './style.scss';
+
 import {ThemeContextProvider} from "./store/theme-context";
+import {UserContextProvider} from "./store/user-context";
 
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
-import {UserContextProvider} from "./store/user-context";
 import Register from "./pages/Register";
+
 
 const App = () => {
 
@@ -23,7 +25,6 @@ const App = () => {
                 </BrowserRouter>
             </ThemeContextProvider>
         </UserContextProvider>
-
     );
 };
 

@@ -1,42 +1,38 @@
 import React, {ReactComponentElement, useContext, useEffect, useState} from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import {auth} from "../firebase";
+
 import {Navigate} from "react-router-dom";
 import {Block} from 'react-barebones-ts'
 
 import Content from "./Content";
 import Nav from "./Nav";
-
-import UserContext from "../store/user-context";
-import {ThemeContext} from "../store/theme-context";
 import Spinner from "../components/spinner/Spinner";
+
+import {ThemeContext} from "../store/theme-context";
+
+import useFirebaseAuth from "../hooks/useFirebaseAuth";
+import userContext from "../store/user-context";
 
 type ContentProps = {
     children: ReactComponentElement<any>
 }
 const AppWrapper = ({children}: ContentProps) => {
 
-    const userCtx = useContext(UserContext);
+    const userCtx = useContext(userContext)
     const themeCtx = useContext(ThemeContext);
 
     const [redirect, setRedirect] = useState(false)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                userCtx.updateUser({
-                    name: user.displayName,
-                    id: user.uid
-                })
-                setLoading(false)
+    const {authLoading, authUser} = useFirebaseAuth()
 
-            } else {
-                setLoading(false)
-                setRedirect(true)
-            }
-        })
-    }, [userCtx.user])
+    useEffect(() => {
+        setLoading(authLoading)
+        userCtx.updateUser(authUser)
+        if (authUser.id === "" && !authLoading) {
+            setRedirect(true)
+        }
+    }, [authLoading, authUser])
+
 
     if (loading) {
         return <Block style={{

@@ -1,5 +1,5 @@
-import React, {useContext} from "react";
-import {Link} from "react-router-dom";
+import React, {useContext, useState} from "react";
+import {Link, Navigate} from "react-router-dom";
 import {  signOut } from "firebase/auth";
 import {auth} from '../firebase';
 
@@ -13,12 +13,14 @@ import LogoutIcon from '../assets/icons/logout-box-r-line.svg';
 import {ThemeContext} from "../store/theme-context";
 
 import {Block, Button, Text} from 'react-barebones-ts'
+import useFirebaseAuth from "../hooks/useFirebaseAuth";
 
 const Nav = () => {
 
     const userCtx = useContext(userContext)
-
     const themeCtx = useContext(ThemeContext);
+
+    const [redirect, setRedirect] = useState(false)
 
     const handleThemeToggle = () => {
         themeCtx.toggleDark();
@@ -29,13 +31,15 @@ const Nav = () => {
             userCtx.updateUser({
                 name: '',
                 id: ''
-            });
-            console.log('signed out');
-
+            })
+            setRedirect(true)
         }).catch((error) => {
-            // An error happened.
             console.log(error);
         });
+    }
+
+    if (redirect) {
+        return <Navigate to={'/login'}/>
     }
 
     return (

@@ -7,8 +7,6 @@ export type User = {
 
 type UserCont = {
     user: User,
-    loadingUser: boolean,
-    loadUser: any,
     updateUser: any
 }
 
@@ -18,34 +16,23 @@ const UserContext = createContext<UserCont>(
             name: '',
             id: ''
         },
-        loadingUser: false,
-        loadUser: () => {},
         updateUser: (user: User) => {}
     },
 );
 
 export const UserContextProvider = (props: any) => {
 
-    const [loadingUser, setLoadingUser] = useState(true)
-
     const [user, setUser] = useState<User>({
         name: '',
         id: ''
     })
 
-    const loadUser = () :any => {
-        setLoadingUser(true)
-    }
-
     const updateUser = (user: User): any => {
         setUser(() => user)
-        setLoadingUser(false)
     }
 
     const context: UserCont = {
         user,
-        loadingUser,
-        loadUser,
         updateUser
     }
 
