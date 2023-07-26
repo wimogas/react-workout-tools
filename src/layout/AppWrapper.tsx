@@ -33,6 +33,13 @@ const AppWrapper = ({children}: ContentProps) => {
         }
     }, [authLoading, authUser])
 
+    useEffect(() => {
+        if (userCtx.user.id !== "" && Object.keys(userCtx.workoutPlan).length === 0) {
+            userCtx.updateWorkoutPlan()
+        } else if (Object.keys(userCtx.workoutPlan).length !== 0) {
+            console.log(userCtx.workoutPlan)
+        }
+    }, [userCtx.user, userCtx.workoutPlan])
 
     if (loading) {
         return <Block style={{

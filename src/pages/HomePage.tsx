@@ -1,11 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Modal, Text} from 'react-barebones-ts'
-import {app} from "../firebase";
 
-import {
-    getFirestore, getDoc, doc,
-    query, where, getDocs, collection
-} from '@firebase/firestore/lite';
+import {app} from "../firebase";
+import {getFirestore, getDoc, doc, query, where, getDocs, collection} from '@firebase/firestore/lite';
 
 import {ThemeContext} from "../store/theme-context";
 import userContext from "../store/user-context";
@@ -20,21 +17,27 @@ import Header from "../components/Header";
 
 import Spinner from "../components/spinner/Spinner";
 
-
 const HomePage = () => {
 
     const userCtx = useContext(userContext);
 
     const themeCtx = useContext(ThemeContext);
 
-    const today = getDayOfTheWeek();
+    const today = "Monday";
     const program = "my plan"
     const [date, setDate] = useState(today);
 
     const MOCK_DATA = data.programs[program].workouts[date].exercises;
 
-    const [exerciseList, setExerciseList] = useState(MOCK_DATA)
-    const [active, setActive] = useState(exerciseList.length > 0 ? exerciseList[0].name : '')
+    type ExerciseList = {
+        name: string,
+        sets: number,
+        reps: number,
+        weight: number
+    }
+
+    const [exerciseList, setExerciseList] = useState<ExerciseList[]>([])
+    const [active, setActive] = useState('')
     const [activeSet, setActiveSet] = useState(0)
     const [done, setDone] = useState<any>([])
     const [restModal, setRestModal] = useState(false)
@@ -71,8 +74,8 @@ const HomePage = () => {
     const handleShowNextDay = () => {
         const tomorrow = getTomorrow(date);
         setDate(tomorrow);
-        if (data.programs[program].workouts[tomorrow].exercises.length > 0) {
-            setExerciseList(data.programs[program].workouts[tomorrow].exercises)
+        if (userCtx.workoutPlan[tomorrow].exercises.length > 0) {
+            setExerciseList(userCtx.workoutPlan[tomorrow].exercises)
         } else {
             setExerciseList([])
         }
@@ -81,29 +84,21 @@ const HomePage = () => {
     const handleShowPrevDay = () => {
         const yesterday = getYesterday(date);
         setDate(yesterday);
-        if (data.programs[program].workouts[yesterday].exercises.length > 0) {
-            setExerciseList(data.programs[program].workouts[yesterday].exercises)
+        if (userCtx.workoutPlan[yesterday].exercises.length > 0) {
+            setExerciseList(userCtx.workoutPlan[yesterday].exercises)
         } else {
             setExerciseList([])
         }
     }
 
-    const handleGetWorkoutPlan = async () => {
-        const firestore = getFirestore(app);
-        let currentPlan = '';
-        const docRef = doc(firestore, `users/${userCtx.user.id}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-           currentPlan = docSnap.data().currentPlan
+    useEffect(() =>{
+        if(userCtx.user.id !== '' && Object.keys(userCtx.workoutPlan).length > 0 && exerciseList.length === 0) {
+            setExerciseList(userCtx.workoutPlan[date].exercises)
         }
-        const q = query(collection(firestore, "plans"), where("name", "==", currentPlan), where("user_id", "==", userCtx.user.id));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            setExerciseList(doc.data().week[today].exercises);
-            setLoading(false);
-        });
-    }
+        if (active === '' && exerciseList.length > 0) {
+            setActive(exerciseList[0].name)
+        }
+    }, [exerciseList, userCtx.workoutPlan, userCtx.user])
 
     return (
         <AppWrapper>
