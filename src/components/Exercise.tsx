@@ -1,9 +1,13 @@
-import React from "react";
-import {Block, Button, Icon, Text} from "react-barebones-ts";
+import React, {useContext, useState} from "react";
+import {Block, Button, Grid, Icon, Modal, Text} from "react-barebones-ts";
 
+import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 import CheckLine from "../assets/icons/check-line.svg";
 
+import userContext from "../store/user-context";
+
 type ExerciseProps = {
+    day: string,
     dark: boolean,
     exercise: any,
     done: any,
@@ -12,8 +16,11 @@ type ExerciseProps = {
     handleSetButtonAction: (sets: number, i: number) => void
 }
 
-const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
+const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
 
+    const userCtx = useContext(userContext);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const setBuilder = (exercise: any) => {
         let setArray = [];
         for (let i = 0; i < exercise.sets; i++) {
@@ -32,21 +39,52 @@ const Exercise = ({dark, exercise, done, active, activeSet, handleSetButtonActio
 
     const returnedSets = setBuilder(exercise);
 
+    const handleDeleteExercise = () => {
+        setShowDeleteModal(true)
+    }
+
     return (
         <Block
             key={exercise.name}
             column
             size={300}
+            variant={'card'}
+            dark={dark}
+            classes={'bb-p-400'}
             >
-            <Block size={400} align={'center'}>
-                <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'primary' : done.includes(exercise.name) ? 'success' : 'disabled'}/>
-                {done.includes(exercise.name) && <Icon icon={<CheckLine/>} size={20} color={'#189949'}/>}
+            {showDeleteModal &&
+                <Modal
+                    dark={dark}
+                    close={() => setShowDeleteModal(false)}
+                    title={'Delete Exercise'}>
+                    <Text
+                        type={'p'}
+                        text={'Are you sure you want to delete this exercise?'}/>
+                    <Block
+                        align={'center'}
+                        size={400}
+                        justify={'flex-end'}
+                        classes={'bb-mt-400'}>
+                        <Button variant={'tertiary'} dark action={() => setShowDeleteModal(false)}>Cancel</Button>
+                        <Button variant={'danger'} dark action={() => {
+                            userCtx.deleteExerciseFromWorkoutPlan(day, exercise)
+                            setShowDeleteModal(false)
+                        }}>Delete</Button>
+                    </Block>
+                </Modal>
+            }
+            <Block>
+                <Block size={400} align={'center'} justify={'space-between'} style={{"width": "100%"}}>
+                    <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'primary' : done.includes(exercise.name) ? 'success' : 'disabled'}/>
+                    {done.includes(exercise.name) && <Icon icon={<CheckLine/>} size={20} color={'#189949'}/>}
+                </Block>
+                <Button variant={'icon-only'} icon={<DeleteIcon/>} dark={dark} iconSize={24} action={handleDeleteExercise}/>
             </Block>
             <Block size={300}>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Reps: ' + exercise.reps}/>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Weight: ' + exercise.weight}/>
             </Block>
-            <Block size={200}>
+            <Block size={200} classes={'bb-wrap'}>
                 {returnedSets.map((set: any) => {
                     return (
                         <span key={set.key}>

@@ -35,9 +35,7 @@ const AppWrapper = ({children}: ContentProps) => {
 
     useEffect(() => {
         if (userCtx.user.id !== "" && Object.keys(userCtx.workoutPlan).length === 0) {
-            userCtx.updateWorkoutPlan()
-        } else if (Object.keys(userCtx.workoutPlan).length !== 0) {
-            console.log(userCtx.workoutPlan)
+            userCtx.getWorkoutPlan()
         }
     }, [userCtx.user, userCtx.workoutPlan])
 

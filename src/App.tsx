@@ -9,7 +9,7 @@ import {UserContextProvider} from "./store/user-context";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
+import Plans from "./pages/Plans";
 
 const App = () => {
 
@@ -19,6 +19,7 @@ const App = () => {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>
+                        <Route path="/plans" element={<Plans/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
                     </Routes>

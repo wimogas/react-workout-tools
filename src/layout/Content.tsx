@@ -12,7 +12,7 @@ return (
         size={500}
         column
         classes={'bb-pb-900 bb-mx-600 bb-w-100'}
-        style={{"marginTop": "78px"}}
+        style={{"marginTop": "32px"}}
     >
         {children}
     </Block>

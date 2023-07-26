@@ -16,6 +16,7 @@ import Exercise from "../components/Exercise";
 import Header from "../components/Header";
 
 import Spinner from "../components/spinner/Spinner";
+import ExerciseForm from "../components/ExerciseForm";
 
 const HomePage = () => {
 
@@ -23,7 +24,7 @@ const HomePage = () => {
 
     const themeCtx = useContext(ThemeContext);
 
-    const today = "Monday";
+    const today = getDayOfTheWeek();
     const program = "my plan"
     const [date, setDate] = useState(today);
 
@@ -43,7 +44,8 @@ const HomePage = () => {
     const [restModal, setRestModal] = useState(false)
     const [completedModal, setCompletedModal] = useState(false)
 
-    const [loading, setLoading] = useState(false)
+    const [showExerciseForm, setShowExerciseForm] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     const handleSetButtonAction = (sets: number, i: number) => {
         setRestModal(true);
@@ -92,8 +94,13 @@ const HomePage = () => {
     }
 
     useEffect(() =>{
-        if(userCtx.user.id !== '' && Object.keys(userCtx.workoutPlan).length > 0 && exerciseList.length === 0) {
-            setExerciseList(userCtx.workoutPlan[date].exercises)
+        if(userCtx.user.id !== '' && Object.keys(userCtx.workoutPlan).length > 0) {
+            if (userCtx.workoutPlan[date].exercises.length !== exerciseList.length) {
+                setExerciseList(userCtx.workoutPlan[date].exercises)
+                setLoading(false)
+            } else {
+                setLoading(false)
+            }
         }
         if (active === '' && exerciseList.length > 0) {
             setActive(exerciseList[0].name)
@@ -103,15 +110,22 @@ const HomePage = () => {
     return (
         <AppWrapper>
             <Block column align={'flex-start'} size={900}>
-                {userCtx && userCtx.user.name !== '' ? <Text type={'h3'} color={'secondary'} dark={themeCtx.dark} text={`Hello, ${userCtx.user.name}`}/> : ''}
+                {showExerciseForm && <Modal
+                    dark={themeCtx.dark}
+                    title={'Add Exercise'}
+                    close={() => setShowExerciseForm(false)}>
+                    <ExerciseForm  dark={themeCtx.dark} day={date} setShowExerciseForm={setShowExerciseForm}/>
+                </Modal>
+                }
                 <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
                 {completedModal && <Modal dark={themeCtx.dark} title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}
 
-                <Block column size={700}>
+                <Block column size={400} classes={'bb-w-100'}>
                 {loading && <Spinner />}
                 {!loading && exerciseList.length > 0 && exerciseList.map((exercise: any) => {
                     return <Exercise
+                        day={date}
                         dark={themeCtx.dark}
                         key={exercise.name}
                         exercise={exercise}
@@ -120,11 +134,14 @@ const HomePage = () => {
                         done={done}
                         handleSetButtonAction={handleSetButtonAction}/>
                 })}
+                    {!loading && exerciseList.length === 0 &&
+                        <Block classes={'bb-w-100'}>
+                            <Text type={'h2'} text={"No exercises found for today"}/>
+                        </Block>
+                    }
+                    {!showExerciseForm && <Block><Button variant={'primary'} dark={themeCtx.dark} action={() => setShowExerciseForm(true)}>Add Exercise</Button></Block>}
                 </Block>
-                {exerciseList.length <= 0 &&
-                    <Block justify={'center'} classes={'bb-w-100'}>
-                        <Text type={'h2'} text={"No exercises found for today"}/>
-                </Block>}
+
             </Block>
         </AppWrapper>
     );

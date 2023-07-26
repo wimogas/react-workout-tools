@@ -51,14 +51,17 @@ const Nav = () => {
                "height": "66px",
             }}
         >
-            <Block size={300}>
+            <Block size={800}>
                 <Link to="/">
-                    <Text color={'secondary'} dark text={'WORKOUT TOOLS'}/>
+                    <Text color={'secondary'} dark text={'Workouts'}/>
+                </Link>
+                <Link to="/plans">
+                    <Text color={'secondary'} dark text={'Plans'}/>
                 </Link>
             </Block>
             <Block size={200}>
-                <Button variant={'icon-only'} iconSize={20} icon={themeCtx.dark ? <SunIcon/> : <MoonIcon/>} dark action={handleThemeToggle}/>
-                <Button variant={'icon-only'} iconSize={20} icon={<LogoutIcon/>} dark action={() => handleSignOut()}/>
+                <Button variant={'icon-only'} iconSize={24} icon={themeCtx.dark ? <SunIcon/> : <MoonIcon/>} dark action={handleThemeToggle}/>
+                <Button variant={'icon-only'} iconSize={24} icon={<LogoutIcon/>} dark action={() => handleSignOut()}/>
             </Block>
         </Block>
     );

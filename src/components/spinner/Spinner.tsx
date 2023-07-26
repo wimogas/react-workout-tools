@@ -12,13 +12,15 @@ type SpinnerProps = {
 const Spinner = ({ fullWidth }: SpinnerProps) => {
     if (fullWidth) {
         return (
-            <div className={classNames(styles.spinner, styles['full-width'])}>
+            <div className={classNames(styles['full-width'])}>
                 <SpinnerIcon />
             </div>
         )
     }
     return (
-        <SpinnerButtonIcon />
+        <div className={classNames(styles.spinner)}>
+            <SpinnerButtonIcon />
+        </div>
     )
 }
 
