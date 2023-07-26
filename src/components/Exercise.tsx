@@ -73,8 +73,8 @@ const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButton
                     </Block>
                 </Modal>
             }
-            <Block>
-                <Block size={400} align={'center'} justify={'space-between'} style={{"width": "100%"}}>
+            <Block size={400} align={'center'} justify={'space-between'} classes={'bb-w-100'}>
+                <Block size={200}>
                     <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'primary' : done.includes(exercise.name) ? 'success' : 'disabled'}/>
                     {done.includes(exercise.name) && <Icon icon={<CheckLine/>} size={20} color={'#189949'}/>}
                 </Block>
