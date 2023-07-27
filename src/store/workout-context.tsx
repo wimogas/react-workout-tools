@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
-import {collection, doc, getDoc, getDocs, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
+import React, {createContext, useContext, useState} from "react";
+import {collection, doc, getDocs, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
 import {app} from "../firebase";
 
 import data from '../assets/data/workouts.json';

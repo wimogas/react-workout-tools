@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Modal, Text} from 'react-barebones-ts'
 
-import {ThemeContext} from "../store/theme-context";
+import ThemeContext from "../store/theme-context";
 import userContext from "../store/user-context";
 import PlanContext from "../store/plan-context";
 import WorkoutContext from "../store/workout-context";
@@ -12,7 +12,6 @@ import AppWrapper from "../layout/AppWrapper";
 import RestModal from "../components/RestModal";
 import Exercise from "../components/Exercise";
 import Header from "../components/Header";
-
 import Spinner from "../components/spinner/Spinner";
 import ExerciseForm from "../components/ExerciseForm";
 

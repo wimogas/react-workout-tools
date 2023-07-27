@@ -7,12 +7,12 @@ import Content from "./Content";
 import Nav from "./Nav";
 import Spinner from "../components/spinner/Spinner";
 
-import {ThemeContext} from "../store/theme-context";
-
+import ThemeContext from "../store/theme-context";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import userContext from "../store/user-context";
 import PlanContext from "../store/plan-context";
 import WorkoutContext from "../store/workout-context";
+
 
 type ContentProps = {
     children: ReactComponentElement<any>

@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Grid, Modal, Text} from 'react-barebones-ts'
 
 import userContext from "../store/user-context";
-import {ThemeContext} from "../store/theme-context";
+import ThemeContext from "../store/theme-context";
 import PlanContext from "../store/plan-context";
 import WorkoutContext from "../store/workout-context";
 

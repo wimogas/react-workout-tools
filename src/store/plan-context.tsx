@@ -1,9 +1,8 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useState} from "react";
 import {collection, doc, getDoc, getDocs, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
 import {app} from "../firebase";
 import UserContext from "./user-context";
 import WorkoutContext from "./workout-context";
-import userContext from "./user-context";
 
 const OFFLINE_MODE = false;
 

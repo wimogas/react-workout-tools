@@ -1,11 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {Link, Navigate} from "react-router-dom";
 import {Button, Block, Input, Alert, Text} from 'react-barebones-ts'
 
-import {createUserWithEmailAndPassword, onAuthStateChanged, updateProfile} from 'firebase/auth';
+import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import { auth } from '../firebase';
 
-import userContext, {User} from "../store/user-context";
+import userContext from "../store/user-context";
 
 import AuthWrapper from "../layout/AuthWrapper";
 import Spinner from "../components/spinner/Spinner";

@@ -1,6 +1,6 @@
 import React, {createContext, useState} from "react";
 
-export const ThemeContext = createContext<any>({
+const ThemeContext = createContext<any>({
     dark: true,
     toggleDark: () => {}
 });
@@ -18,3 +18,5 @@ const [dark, setDark] = useState(true);
         </ThemeContext.Provider>
     )
 }
+
+export default ThemeContext;

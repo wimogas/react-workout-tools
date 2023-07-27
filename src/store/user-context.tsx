@@ -1,6 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
-
-import data from '../assets/data/workouts.json';
+import React, { createContext, useState } from "react";
 
 export type User = {
     name: string ,

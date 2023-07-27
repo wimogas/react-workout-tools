@@ -1,8 +1,8 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {Link, Navigate} from "react-router-dom";
 import {Button, Block, Input, Alert, Text} from 'react-barebones-ts'
 import {signInWithEmailAndPassword, setPersistence, browserLocalPersistence, onAuthStateChanged  } from 'firebase/auth';
-import { auth } from '../firebase';
+import {auth} from '../firebase';
 
 import userContext, {User} from "../store/user-context";
 

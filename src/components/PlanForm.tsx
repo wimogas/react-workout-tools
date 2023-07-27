@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react'
 
-import {Button, Block, Input, Alert, Grid} from 'react-barebones-ts'
+import {Button, Block, Input, Alert} from 'react-barebones-ts'
 
 import userContext from "../store/user-context";
 

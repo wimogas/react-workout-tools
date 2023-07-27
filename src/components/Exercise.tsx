@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Block, Button, Grid, Icon, Modal, Text} from "react-barebones-ts";
+import {Block, Button, Icon, Modal, Text} from "react-barebones-ts";
 
 import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 import CheckLine from "../assets/icons/check-line.svg";

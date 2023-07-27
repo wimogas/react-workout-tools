@@ -1,19 +1,16 @@
 import React, {useContext, useState} from "react";
 import {Link, Navigate} from "react-router-dom";
-import {  signOut } from "firebase/auth";
+import {signOut} from "firebase/auth";
 import {auth} from '../firebase';
 
 import userContext from "../store/user-context";
+import ThemeContext from "../store/theme-context";
 
 import SunIcon from '../assets/icons/sun-fill.svg';
 import MoonIcon from '../assets/icons/moon-fill.svg';
-
 import LogoutIcon from '../assets/icons/logout-box-r-line.svg';
 
-import {ThemeContext} from "../store/theme-context";
-
 import {Block, Button, Text} from 'react-barebones-ts'
-import useFirebaseAuth from "../hooks/useFirebaseAuth";
 
 const Nav = () => {
 

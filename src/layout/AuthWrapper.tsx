@@ -1,12 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
+import {Navigate} from "react-router-dom";
+import {Block} from 'react-barebones-ts'
 
-import {Button, Block, Input} from 'react-barebones-ts'
 import styles from "./AuthWrapper.module.css";
+
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import userContext from "../store/user-context";
-import {ThemeContext} from "../store/theme-context";
+
 import Spinner from "../components/spinner/Spinner";
-import {Navigate} from "react-router-dom";
 
 type ContentProps = {
     children: any

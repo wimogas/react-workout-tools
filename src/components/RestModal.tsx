@@ -3,7 +3,7 @@ import {Block, Button, Modal, Text} from "react-barebones-ts";
 
 import data from "../assets/data/workouts.json";
 
-import {ThemeContext} from "../store/theme-context";
+import ThemeContext from "../store/theme-context";
 
 import ResetIcon from "../assets/icons/refresh-line.svg";
 import PlayIcon from "../assets/icons/play-line.svg";
