@@ -48,7 +48,13 @@ const PlanForm = ({setShowPlanForm}: PlanFormProps) => {
             return
         }
 
-        await planCtx.createNewPlan(plan.name);
+        const newPlan = {
+            name: plan.name,
+            user_id: userCtx.user.id,
+            is_selected: false
+        }
+
+        await planCtx.createNewPlan(newPlan);
 
         setLoading(false)
         setShowPlanForm(false)

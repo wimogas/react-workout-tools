@@ -11,6 +11,7 @@ import AddFill from "../assets/icons/add-fill.svg";
 
 import AppWrapper from "../layout/AppWrapper";
 import PlanForm from "../components/PlanForm";
+import Plan from "../components/Plan";
 
 const Plans = () => {
 
@@ -28,14 +29,10 @@ const Plans = () => {
         if(planCtx.plans.length === 0 && userCtx.user.id !== '') {
             planCtx.getAllPlans()
         }
-        if (plans.length !== planCtx.plans.length) {
+        if (plans.length === 0 || plans.length !== planCtx.plans.length) {
             setPlans(() => planCtx.plans)
         }
     }, [plans, planCtx.plans, userCtx.user])
-
-    const handleSelectPlan = (name:string) => {
-        planCtx.setCurrentPlan(name)
-    }
 
     return (
         <AppWrapper>
@@ -53,18 +50,12 @@ const Plans = () => {
 
                 <Grid>
                     {plans.length > 0 && plans.map((plan: any) => {
-                        return <Block
-                            key={plan.name}
-                            variant={'card'}
+                        return <Plan
+                            key={plan.id}
+                            plan={plan}
                             dark={themeCtx.dark}
-                            classes={'bb-p-400'}
-                            column
-                            size={400}>
-                            {plan.name}
-                            <Block>
-                                <Button variant={'secondary'} dark={themeCtx.dark} disabled={ workoutCtx.workoutPlanId === plan.id } action={() => handleSelectPlan(plan.name)}>{workoutCtx.workoutPlanId === plan.id ? 'Selected' : 'Select Plan'}</Button>
-                            </Block>
-                        </Block>
+                            workoutPlanId={''}
+                            />
                     })}
                 </Grid>
             </Block>

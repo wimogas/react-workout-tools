@@ -72,7 +72,7 @@ const HomePage = () => {
     const handleShowNextDay = () => {
         const tomorrow = getTomorrow(date);
         setDate(tomorrow);
-        if (workoutCtx.workoutPlan[tomorrow].exercises.length > 0) {
+        if (Object.keys(workoutCtx.workoutPlan).length > 0 && workoutCtx.workoutPlan[tomorrow].exercises.length > 0) {
             setExerciseList(workoutCtx.workoutPlan[tomorrow].exercises)
         } else {
             setExerciseList([])
@@ -82,7 +82,7 @@ const HomePage = () => {
     const handleShowPrevDay = () => {
         const yesterday = getYesterday(date);
         setDate(yesterday);
-        if (workoutCtx.workoutPlan[yesterday].exercises.length > 0) {
+        if (Object.keys(workoutCtx.workoutPlan).length > 0 && workoutCtx.workoutPlan[yesterday].exercises.length > 0) {
             setExerciseList(workoutCtx.workoutPlan[yesterday].exercises)
         } else {
             setExerciseList([])
@@ -97,6 +97,8 @@ const HomePage = () => {
             } else {
                 setLoading(false)
             }
+        } else {
+            setLoading(false)
         }
         if (active === '' && exerciseList.length > 0) {
             setActive(exerciseList[0].name)

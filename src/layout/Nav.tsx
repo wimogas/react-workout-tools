@@ -5,6 +5,8 @@ import {auth} from '../firebase';
 
 import userContext from "../store/user-context";
 import ThemeContext from "../store/theme-context";
+import WorkoutContext from "../store/workout-context";
+import PlanContext from "../store/plan-context";
 
 import SunIcon from '../assets/icons/sun-fill.svg';
 import MoonIcon from '../assets/icons/moon-fill.svg';
@@ -16,6 +18,8 @@ const Nav = () => {
 
     const userCtx = useContext(userContext)
     const themeCtx = useContext(ThemeContext);
+    const workoutCtx = useContext(WorkoutContext)
+    const planCtx = useContext(PlanContext)
 
     const [redirect, setRedirect] = useState(false)
 
@@ -29,6 +33,8 @@ const Nav = () => {
                 name: '',
                 id: ''
             })
+            workoutCtx.resetWorkoutPlan()
+            planCtx.resetPlans()
             setRedirect(true)
         }).catch((error) => {
             console.log(error);

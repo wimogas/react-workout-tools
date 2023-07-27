@@ -1,26 +1,38 @@
 import React, {createContext, useContext, useState} from "react";
-import {collection, doc, getDoc, getDocs, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
+import {collection, doc, getDoc, getDocs, deleteDoc, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
 import {app} from "../firebase";
 import UserContext from "./user-context";
 import WorkoutContext from "./workout-context";
 
-const OFFLINE_MODE = false;
+type Plan = {
+    id: string,
+    name: string,
+    user_id: string,
+    created_at: Date,
+    week: object
+}
 
 type PlanContext = {
     plans: [],
-    getCurrentPlan: () => Promise<string>,
-    createNewPlan: (name: string) => void,
+    currentPlanId: string,
+    getCurrentPlan: () => void,
+    createNewPlan: (plan: any) => void,
     getAllPlans: () => void,
-    setCurrentPlan: (newCurrentPlan:string) => void
+    setCurrentPlan: (oldCurrentPlan: string, newCurrentPlan:string) => void,
+    deletePlan: (id: string) => void,
+    resetPlans: () => void,
 }
 
 const PlanContext = createContext<PlanContext>(
     {
         plans: [],
-        getCurrentPlan: () => Promise.resolve(''),
-        createNewPlan: (name) => {},
+        currentPlanId: '',
+        getCurrentPlan: () => {},
+        createNewPlan: (plan) => {},
         getAllPlans: () => {},
-        setCurrentPlan: (newCurrentPlan) => {}
+        setCurrentPlan: (oldCurrentPlan, newCurrentPlan) => {},
+        deletePlan: (id) => {},
+        resetPlans: () => {},
     },
 );
 
@@ -33,48 +45,64 @@ export const PlanContextProvider = (props: any) => {
 
     const [plans, setPlans] = useState<any>([])
 
+    const [currentPlanId, setCurrentPlanId] = useState<string>('')
 
     const getCurrentPlan = async () => {
-        const docRef = doc(firestore, `users/${userCtx.user.id}`);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return docSnap.data().currentPlan
-        } else {
-            return ''
+        console.log('getting current plan')
+        const q = query(collection(firestore, "plans"), where("user_id", "==", userCtx.user.id), where("is_selected", "==", true));
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot)
+        if (querySnapshot.empty) {
+            setCurrentPlanId(() => '')
+            return
         }
+        querySnapshot.forEach((doc) => {
+            setCurrentPlanId(() => doc.id)
+        })
     }
 
-    const setCurrentPlan = async (newCurrentPlan:string) => {
-        if (!OFFLINE_MODE) {
-            const docRef = doc(firestore, "users", userCtx.user.id);
-            await updateDoc(docRef, {
-                currentPlan: newCurrentPlan
-            });
-        }
-        await workoutCtx.getWorkoutPlan()
+    const setCurrentPlan = async (oldCurrentPlan: string, newCurrentPlan: string) => {
+        const docOldCurrRef = doc(firestore, "plans", oldCurrentPlan);
+        await updateDoc(docOldCurrRef, {
+            is_selected: false
+        });
+        const docNewCurrRef = doc(firestore, "plans", newCurrentPlan);
+        await updateDoc(docNewCurrRef, {
+            is_selected: true
+        });
+        setCurrentPlanId(() => docNewCurrRef.id)
     }
 
     const getAllPlans = async () => {
-        if (!OFFLINE_MODE) {
-            const q = query(collection(firestore, "plans"), where("user_id", "==", userCtx.user.id));
-            const querySnapshot = await getDocs(q);
+        const q = query(collection(firestore, "plans"), where("user_id", "==", userCtx.user.id));
+        const querySnapshot = await getDocs(q);
+        let newPlans: Plan[] = []
+        if (querySnapshot.empty) {
+            return;
+        } else {
             querySnapshot.forEach((doc) => {
-                const returnedPlan = {
+                const returnedPlan: Plan = {
                     id: doc.id,
                     name: doc.data().name,
                     user_id: doc.data().user_id,
+                    created_at: doc.data().created_at,
                     week: doc.data().week
                 }
-                setPlans((old: any) => [...old, returnedPlan])
+                newPlans.push(returnedPlan)
             })
+            newPlans.sort((a, b) => a.created_at > b.created_at ? 1 : -1)
+            if (plans.length === 0) {
+                setPlans(() => newPlans)
+            }
         }
     }
 
-    const createNewPlan = async (name:string) => {
-
+    const createNewPlan = async (plan: any) => {
         const newPlan = {
-            name: name,
-            user_id: userCtx.user.id,
+            name: plan.name,
+            user_id: plan.user_id,
+            created_at: new Date(),
+            is_selected: plan.is_selected,
             week: {
                 "Monday": {
                     exercises: []
@@ -99,19 +127,33 @@ export const PlanContextProvider = (props: any) => {
                 }
             }
         }
-        if (!OFFLINE_MODE) {
-            const docRef = await addDoc(collection(firestore, "plans"), newPlan);
-            console.log(docRef.id)
-        }
+
+        await addDoc(collection(firestore, "plans"), newPlan);
         setPlans((old: any) => [...old, newPlan])
+    }
+
+    const updatePlan = async (plan: Plan) => {
+
+    }
+
+    const deletePlan = async (id: string) => {
+        await deleteDoc(doc(firestore, "plans", id));
+        setPlans((old: any) => old.filter((plan: Plan) => plan.id !== id))
+    }
+
+    const resetPlans = () => {
+        setPlans([])
     }
 
     const context: PlanContext = {
         createNewPlan,
         getCurrentPlan,
         plans,
+        currentPlanId,
         getAllPlans,
-        setCurrentPlan
+        setCurrentPlan,
+        deletePlan,
+        resetPlans,
     }
 
     return (

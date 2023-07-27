@@ -38,10 +38,11 @@ const AppWrapper = ({children}: ContentProps) => {
     }, [authLoading, authUser])
 
     useEffect(() => {
-        if (userCtx.user.id !== "" && Object.keys(workoutCtx.workoutPlan).length === 0) {
+        if (userCtx.user.id !== "" && Object.keys(workoutCtx.workoutPlan).length === 0 && planCtx.currentPlanId === "") {
+            planCtx.getCurrentPlan()
             workoutCtx.getWorkoutPlan()
         }
-    }, [userCtx.user, workoutCtx.workoutPlan])
+    }, [userCtx.user, workoutCtx.workoutPlan, planCtx.currentPlanId])
 
     if (loading) {
         return <Block style={{

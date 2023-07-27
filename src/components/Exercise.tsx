@@ -1,11 +1,11 @@
 import React, {useContext, useState} from "react";
-import {Block, Button, Icon, Modal, Text} from "react-barebones-ts";
+import {Block, Button, Icon, Text} from "react-barebones-ts";
 
 import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 import CheckLine from "../assets/icons/check-line.svg";
 
-import userContext from "../store/user-context";
 import WorkoutContext from "../store/workout-context";
+import ConfirmDelete from "./ConfirmDelete";
 
 type ExerciseProps = {
     day: string,
@@ -19,7 +19,6 @@ type ExerciseProps = {
 
 const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
 
-    const userCtx = useContext(userContext);
     const workoutCtx = useContext(WorkoutContext);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,8 +40,9 @@ const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButton
 
     const returnedSets = setBuilder(exercise);
 
-    const handleDeleteExercise = () => {
-        setShowDeleteModal(true)
+    const handleConfirmDelete = (exercise: string) => {
+        workoutCtx.deleteExerciseFromWorkoutPlan(day, exercise)
+        setShowDeleteModal(false)
     }
 
     return (
@@ -54,33 +54,18 @@ const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButton
             dark={dark}
             classes={'bb-p-400'}
             >
-            {showDeleteModal &&
-                <Modal
-                    dark={dark}
-                    close={() => setShowDeleteModal(false)}
-                    title={'Delete Exercise'}>
-                    <Text
-                        type={'p'}
-                        text={'Are you sure you want to delete this exercise?'}/>
-                    <Block
-                        align={'center'}
-                        size={400}
-                        justify={'flex-end'}
-                        classes={'bb-mt-400'}>
-                        <Button variant={'tertiary'} dark action={() => setShowDeleteModal(false)}>Cancel</Button>
-                        <Button variant={'danger'} dark action={() => {
-                            workoutCtx.deleteExerciseFromWorkoutPlan(day, exercise)
-                            setShowDeleteModal(false)
-                        }}>Delete</Button>
-                    </Block>
-                </Modal>
-            }
+            {showDeleteModal && <ConfirmDelete
+                name={exercise.name}
+                setShowDeleteModal={setShowDeleteModal}
+                dark={dark}
+                handleConfirmDelete={() => handleConfirmDelete(exercise)}
+            />}
             <Block size={400} align={'center'} justify={'space-between'} classes={'bb-w-100'}>
                 <Block size={200}>
                     <Text type={'h1'} dark={dark} text={exercise.name} color={(active === exercise.name) ? 'primary' : done.includes(exercise.name) ? 'success' : 'disabled'}/>
                     {done.includes(exercise.name) && <Icon icon={<CheckLine/>} size={20} color={'#189949'}/>}
                 </Block>
-                <Button variant={'icon-only'} icon={<DeleteIcon/>} dark={dark} iconSize={24} action={handleDeleteExercise}/>
+                <Button variant={'icon-only'} icon={<DeleteIcon/>} dark={dark} iconSize={24} action={() => setShowDeleteModal(true)}/>
             </Block>
             <Block size={300}>
                 <Text color={(active === exercise.name) ? 'secondary' : 'disabled'} dark={dark} type={'p'} text={'Reps: ' + exercise.reps}/>

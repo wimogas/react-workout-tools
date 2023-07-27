@@ -23,7 +23,9 @@ const AuthWrapper = ({children}: ContentProps) => {
 
     useEffect(() => {
         setLoading(authLoading)
-        userCtx.updateUser(authUser)
+        if (authUser.id === "" && !authLoading) {
+            userCtx.updateUser(authUser)
+        }
     }, [authLoading, authUser])
 
     if (loading) {

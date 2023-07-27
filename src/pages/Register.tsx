@@ -5,10 +5,12 @@ import {Button, Block, Input, Alert, Text} from 'react-barebones-ts'
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import { auth } from '../firebase';
 
-import userContext from "../store/user-context";
+import UserContext from "../store/user-context";
+import PlanContext from "../store/plan-context";
 
 import AuthWrapper from "../layout/AuthWrapper";
 import Spinner from "../components/spinner/Spinner";
+
 
 type UserForm = {
     name: string,
@@ -18,7 +20,8 @@ type UserForm = {
 }
 const Register = () => {
 
-    const userCtx = useContext(userContext)
+    const userCtx = useContext(UserContext);
+    const planCtx = useContext(PlanContext);
 
     const [user, setUser] = useState<UserForm>(
         {
@@ -69,6 +72,18 @@ const Register = () => {
                     updateProfile(userNow,{
                         displayName: user.name,
                     }).then(function() {
+                        const newUser = {
+                            name: userNow.displayName,
+                            id: userNow.uid,
+                        }
+                        userCtx.createNewUser(newUser)
+                    }).then( function() {
+                        const newPlan = {
+                            name: 'Template Plan',
+                            user_id: userNow.uid,
+                            is_selected: true
+                        }
+                        planCtx.createNewPlan(newPlan)
                         setRedirect(true)
                     }).catch(function(error) {
                         setAlert(error.message)

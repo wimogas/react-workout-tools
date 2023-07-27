@@ -2,28 +2,24 @@ import React, {createContext, useContext, useState} from "react";
 import {collection, doc, getDocs, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
 import {app} from "../firebase";
 
-import data from '../assets/data/workouts.json';
 import UserContext from "./user-context";
 import PlanContext from "./plan-context";
-
-const OFFLINE_MODE = false;
-const MOCK_DATA = data;
 
 type WorkoutContext = {
     workoutPlan: any,
     getWorkoutPlan: any,
-    workoutPlanId: string,
     updateWorkoutPlan: (day: string, exercise: any) => void,
     deleteExerciseFromWorkoutPlan: (day: string, exercise: any) => void,
+    resetWorkoutPlan: () => void,
 }
 
 const WorkoutContext = createContext<WorkoutContext>(
     {
         workoutPlan: {},
-        workoutPlanId: '',
         getWorkoutPlan: () => {},
         updateWorkoutPlan: (day, exercise) => {},
         deleteExerciseFromWorkoutPlan: (day, exercise) => {},
+        resetWorkoutPlan: () => {},
     },
 );
 
@@ -38,39 +34,34 @@ export const WorkoutContextProvider = (props: any) => {
 
     const [workoutPlan, setWorkoutPlan] = useState<any>({})
 
-
     const getWorkoutPlan = async () => {
-        if (!OFFLINE_MODE) {
-            const currentPlan = await planCtx.getCurrentPlan();
-            const q = query(collection(firestore, "plans"), where("name", "==", currentPlan), where("user_id", "==", userCtx.user.id));
+        if (userCtx.user.id !== '') {
+            const q = await query(collection(firestore, "plans"), where("is_selected", "==", true), where("user_id", "==", userCtx.user.id));
             const querySnapshot = await getDocs(q);
             querySnapshot.forEach((doc) => {
-                setWorkoutPlanId(doc.id)
                 if (doc.data().week) {
                     setWorkoutPlan(doc.data().week)
                 }
             })
         } else {
-            setWorkoutPlan(MOCK_DATA.programs['my plan'].workouts)
+            setWorkoutPlan({})
         }
     }
 
     const updateWorkoutPlan = async (day:string, exercise:any) => {
-        if (!OFFLINE_MODE) {
-            const docRef = doc(firestore, `plans/${workoutPlanId}`);
-            await updateDoc(docRef, {
-                week: {
-                    ...workoutPlan,
-                    [day]: {
-                        ...workoutPlan[day],
-                        exercises: [
-                            ...workoutPlan[day].exercises,
-                            exercise
-                        ]
-                    }
+        const docRef = doc(firestore, `plans/${planCtx.currentPlanId}`);
+        await updateDoc(docRef, {
+            week: {
+                ...workoutPlan,
+                [day]: {
+                    ...workoutPlan[day],
+                    exercises: [
+                        ...workoutPlan[day].exercises,
+                        exercise
+                    ]
                 }
-            })
-        }
+            }
+        })
         setWorkoutPlan((old: any) => {
             return {
                 ...old,
@@ -87,18 +78,16 @@ export const WorkoutContextProvider = (props: any) => {
 
     const deleteExerciseFromWorkoutPlan = async (day:string, exercise:any) => {
         const newExercises = workoutPlan[day].exercises.filter((ex: any) => ex.name !== exercise.name)
-        if (!OFFLINE_MODE) {
-            const docRef = doc(firestore, `plans/${workoutPlanId}`);
-            await updateDoc(docRef, {
-                week: {
-                    ...workoutPlan,
-                    [day]: {
-                        ...workoutPlan[day],
-                        exercises: newExercises
-                    }
+        const docRef = doc(firestore, `plans/${planCtx.currentPlanId}`);
+        await updateDoc(docRef, {
+            week: {
+                ...workoutPlan,
+                [day]: {
+                    ...workoutPlan[day],
+                    exercises: newExercises
                 }
-            })
-        }
+            }
+        })
         setWorkoutPlan((old: any) => {
             return {
                 ...old,
@@ -110,12 +99,16 @@ export const WorkoutContextProvider = (props: any) => {
         })
     }
 
+    const resetWorkoutPlan = () => {
+        setWorkoutPlan({})
+    }
+
     const context: WorkoutContext = {
         workoutPlan,
         getWorkoutPlan,
-        workoutPlanId,
         updateWorkoutPlan,
-        deleteExerciseFromWorkoutPlan
+        deleteExerciseFromWorkoutPlan,
+        resetWorkoutPlan
     }
 
     return (
