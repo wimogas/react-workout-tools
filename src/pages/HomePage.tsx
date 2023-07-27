@@ -1,13 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import {Block, Button, Modal, Text} from 'react-barebones-ts'
 
-import {app} from "../firebase";
-import {getFirestore, getDoc, doc, query, where, getDocs, collection} from '@firebase/firestore/lite';
-
 import {ThemeContext} from "../store/theme-context";
 import userContext from "../store/user-context";
+import PlanContext from "../store/plan-context";
+import WorkoutContext from "../store/workout-context";
 
-import data from '../assets/data/workouts.json';
 import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
 
 import AppWrapper from "../layout/AppWrapper";
@@ -21,14 +19,13 @@ import ExerciseForm from "../components/ExerciseForm";
 const HomePage = () => {
 
     const userCtx = useContext(userContext);
+    const planCtx = useContext(PlanContext);
+    const workoutCtx = useContext(WorkoutContext);
 
     const themeCtx = useContext(ThemeContext);
 
     const today = getDayOfTheWeek();
-    const program = "my plan"
     const [date, setDate] = useState(today);
-
-    const MOCK_DATA = data.programs[program].workouts[date].exercises;
 
     type ExerciseList = {
         name: string,
@@ -76,8 +73,8 @@ const HomePage = () => {
     const handleShowNextDay = () => {
         const tomorrow = getTomorrow(date);
         setDate(tomorrow);
-        if (userCtx.workoutPlan[tomorrow].exercises.length > 0) {
-            setExerciseList(userCtx.workoutPlan[tomorrow].exercises)
+        if (workoutCtx.workoutPlan[tomorrow].exercises.length > 0) {
+            setExerciseList(workoutCtx.workoutPlan[tomorrow].exercises)
         } else {
             setExerciseList([])
         }
@@ -86,17 +83,17 @@ const HomePage = () => {
     const handleShowPrevDay = () => {
         const yesterday = getYesterday(date);
         setDate(yesterday);
-        if (userCtx.workoutPlan[yesterday].exercises.length > 0) {
-            setExerciseList(userCtx.workoutPlan[yesterday].exercises)
+        if (workoutCtx.workoutPlan[yesterday].exercises.length > 0) {
+            setExerciseList(workoutCtx.workoutPlan[yesterday].exercises)
         } else {
             setExerciseList([])
         }
     }
 
     useEffect(() =>{
-        if(userCtx.user.id !== '' && Object.keys(userCtx.workoutPlan).length > 0) {
-            if (userCtx.workoutPlan[date].exercises.length !== exerciseList.length) {
-                setExerciseList(userCtx.workoutPlan[date].exercises)
+        if(userCtx.user.id !== '' && Object.keys(workoutCtx.workoutPlan).length > 0) {
+            if (workoutCtx.workoutPlan[date].exercises.length !== exerciseList.length) {
+                setExerciseList(workoutCtx.workoutPlan[date].exercises)
                 setLoading(false)
             } else {
                 setLoading(false)
@@ -105,7 +102,7 @@ const HomePage = () => {
         if (active === '' && exerciseList.length > 0) {
             setActive(exerciseList[0].name)
         }
-    }, [exerciseList, userCtx.workoutPlan, userCtx.user])
+    }, [exerciseList, workoutCtx.workoutPlan, userCtx.user])
 
     return (
         <AppWrapper>

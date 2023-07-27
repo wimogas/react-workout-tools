@@ -5,6 +5,7 @@ import {Button, Block, Input, Alert, Grid} from 'react-barebones-ts'
 import userContext from "../store/user-context";
 
 import Spinner from "./spinner/Spinner";
+import PlanContext from "../store/plan-context";
 
 type NewPlan = {
     name: string
@@ -17,6 +18,7 @@ type PlanFormProps = {
 const PlanForm = ({setShowPlanForm}: PlanFormProps) => {
 
     const userCtx = useContext(userContext)
+    const planCtx   = useContext(PlanContext)
 
     const [plan, setPlan] = useState<NewPlan>({
         name: ''
@@ -46,7 +48,7 @@ const PlanForm = ({setShowPlanForm}: PlanFormProps) => {
             return
         }
 
-        await userCtx.createNewPlan(plan.name);
+        await planCtx.createNewPlan(plan.name);
 
         setLoading(false)
         setShowPlanForm(false)

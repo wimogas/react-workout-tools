@@ -5,6 +5,7 @@ import {Button, Block, Input, Alert, Grid} from 'react-barebones-ts'
 import userContext from "../store/user-context";
 
 import Spinner from "./spinner/Spinner";
+import WorkoutContext from "../store/workout-context";
 
 type NewExercise = {
     name: string,
@@ -22,6 +23,7 @@ type ExerciseFormProps = {
 const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => {
 
     const userCtx = useContext(userContext)
+    const workoutCtx   = useContext(WorkoutContext)
 
     const [exercise, setExercise] = useState<NewExercise>({
         name: '',
@@ -61,7 +63,7 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
             weight: parseInt(exercise.weight)
         }
 
-        await userCtx.updateWorkoutPlan(day, newExercise);
+        await workoutCtx.updateWorkoutPlan(day, newExercise);
         setLoading(false)
         setShowExerciseForm(false)
     }

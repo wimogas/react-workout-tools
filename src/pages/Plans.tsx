@@ -2,36 +2,39 @@ import React, {useContext, useEffect, useState} from "react";
 
 import {Block, Button, Grid, Modal, Text} from 'react-barebones-ts'
 
+import userContext from "../store/user-context";
+import {ThemeContext} from "../store/theme-context";
+import PlanContext from "../store/plan-context";
+import WorkoutContext from "../store/workout-context";
+
 import AddFill from "../assets/icons/add-fill.svg";
 
 import AppWrapper from "../layout/AppWrapper";
-
 import PlanForm from "../components/PlanForm";
-import userContext from "../store/user-context";
-
-import {ThemeContext} from "../store/theme-context";
 
 const Plans = () => {
 
     const [showPlanForm, setShowPlanForm] = useState(false)
 
     const userCtx = useContext(userContext)
+    const planCtx = useContext(PlanContext)
+    const workoutCtx = useContext(WorkoutContext)
 
     const themeCtx = useContext(ThemeContext);
 
     const [plans, setPlans] = useState<any>([])
 
     useEffect(() => {
-        if(userCtx.plans.length === 0 && userCtx.user.id !== '') {
-            userCtx.getAllPlans()
+        if(planCtx.plans.length === 0 && userCtx.user.id !== '') {
+            planCtx.getAllPlans()
         }
-        if (plans.length !== userCtx.plans.length > 0) {
-            setPlans(() => userCtx.plans)
+        if (plans.length !== planCtx.plans.length) {
+            setPlans(() => planCtx.plans)
         }
-    }, [plans, userCtx.plans, userCtx.user])
+    }, [plans, planCtx.plans, userCtx.user])
 
     const handleSelectPlan = (name:string) => {
-        userCtx.setCurrentPlan(name)
+        planCtx.setCurrentPlan(name)
     }
 
     return (
@@ -53,13 +56,13 @@ const Plans = () => {
                         return <Block
                             key={plan.name}
                             variant={'card'}
-                            dark
+                            dark={themeCtx.dark}
                             classes={'bb-p-400'}
                             column
                             size={400}>
                             {plan.name}
                             <Block>
-                                <Button variant={'secondary'} disabled={ userCtx.workoutPlanId === plan.id } action={() => handleSelectPlan(plan.name)}>{userCtx.workoutPlanId === plan.id ? 'Selected' : 'Select Plan'}</Button>
+                                <Button variant={'secondary'} dark={themeCtx.dark} disabled={ workoutCtx.workoutPlanId === plan.id } action={() => handleSelectPlan(plan.name)}>{workoutCtx.workoutPlanId === plan.id ? 'Selected' : 'Select Plan'}</Button>
                             </Block>
                         </Block>
                     })}

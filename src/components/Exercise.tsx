@@ -5,6 +5,7 @@ import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 import CheckLine from "../assets/icons/check-line.svg";
 
 import userContext from "../store/user-context";
+import WorkoutContext from "../store/workout-context";
 
 type ExerciseProps = {
     day: string,
@@ -19,6 +20,7 @@ type ExerciseProps = {
 const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
 
     const userCtx = useContext(userContext);
+    const workoutCtx = useContext(WorkoutContext);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const setBuilder = (exercise: any) => {
@@ -67,7 +69,7 @@ const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButton
                         classes={'bb-mt-400'}>
                         <Button variant={'tertiary'} dark action={() => setShowDeleteModal(false)}>Cancel</Button>
                         <Button variant={'danger'} dark action={() => {
-                            userCtx.deleteExerciseFromWorkoutPlan(day, exercise)
+                            workoutCtx.deleteExerciseFromWorkoutPlan(day, exercise)
                             setShowDeleteModal(false)
                         }}>Delete</Button>
                     </Block>
