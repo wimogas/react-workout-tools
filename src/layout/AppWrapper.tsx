@@ -11,8 +11,6 @@ import ThemeContext from "../store/theme-context";
 import useFirebaseAuth from "../hooks/useFirebaseAuth";
 import userContext from "../store/user-context";
 import PlanContext from "../store/plan-context";
-import WorkoutContext from "../store/workout-context";
-
 
 type ContentProps = {
     children: ReactComponentElement<any>
@@ -22,7 +20,6 @@ const AppWrapper = ({children}: ContentProps) => {
     const userCtx = useContext(userContext)
     const themeCtx = useContext(ThemeContext);
     const planCtx = useContext(PlanContext)
-    const workoutCtx = useContext(WorkoutContext)
 
     const [redirect, setRedirect] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -38,11 +35,10 @@ const AppWrapper = ({children}: ContentProps) => {
     }, [authLoading, authUser])
 
     useEffect(() => {
-        if (userCtx.user.id !== "" && Object.keys(workoutCtx.workoutPlan).length === 0 && planCtx.currentPlanId === "") {
+        if (userCtx.user.id !== "" && planCtx.currentPlan.id === '') {
             planCtx.getCurrentPlan()
-            workoutCtx.getWorkoutPlan()
         }
-    }, [userCtx.user, workoutCtx.workoutPlan, planCtx.currentPlanId])
+    }, [userCtx.user, planCtx.currentPlan])
 
     if (loading) {
         return <Block style={{

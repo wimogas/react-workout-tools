@@ -18,6 +18,8 @@ const Plan = ({plan, dark  }: PlanProps) => {
 
     const planCtx = useContext(PlanContext)
 
+    const [isSelected, setIsSelected] = useState(false)
+
     const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     const handleEditName = () => {
@@ -30,8 +32,16 @@ const Plan = ({plan, dark  }: PlanProps) => {
     }
 
     const handleSelectPlan = (plan: any) => {
-        planCtx.setCurrentPlan(planCtx.currentPlanId, plan.id)
+        planCtx.changeCurrentPlan(planCtx.currentPlan.id, plan.id)
     }
+
+    useEffect(() => {
+        if (planCtx.currentPlan.id === plan.id) {
+            setIsSelected(true)
+        } else {
+            setIsSelected(false)
+        }
+    }   , [planCtx.currentPlan])
 
     return (
         <Block classes={'bb-w-100'} stretch >
@@ -52,11 +62,11 @@ const Plan = ({plan, dark  }: PlanProps) => {
                         <Text type={'h3'} text={plan.name}/>
                         <Button variant={'icon-only'} icon={<EditIcon/>} iconSize={24} dark={dark} action={handleEditName}/>
                     </Block>
-                    {planCtx.currentPlanId !== plan.id && <Button variant={'icon-only'} icon={<DeleteIcon/>} iconSize={24} dark={dark} action={() => setShowDeleteModal(true)}/>}
+                    {!isSelected && <Button variant={'icon-only'} icon={<DeleteIcon/>} iconSize={24} dark={dark} action={() => setShowDeleteModal(true)}/>}
                 </Block>
 
                 <Block>
-                    <Button variant={'secondary'} dark={dark} disabled={planCtx.currentPlanId === plan.id} action={() => handleSelectPlan(plan)}>{planCtx.currentPlanId === plan.id ? 'Selected' : 'Select Plan'}</Button>
+                    <Button variant={'secondary'} dark={dark} disabled={isSelected} action={() => handleSelectPlan(plan)}>{isSelected ? 'Selected' : 'Select Plan'}</Button>
                 </Block>
             </Block>
         </Block>

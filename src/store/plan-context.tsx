@@ -2,7 +2,6 @@ import React, {createContext, useContext, useState} from "react";
 import {collection, doc, getDoc, getDocs, deleteDoc, getFirestore, query, where, updateDoc, addDoc} from "@firebase/firestore/lite";
 import {app} from "../firebase";
 import UserContext from "./user-context";
-import WorkoutContext from "./workout-context";
 
 type Plan = {
     id: string,
@@ -13,55 +12,91 @@ type Plan = {
 }
 
 type PlanContext = {
-    plans: [],
-    currentPlanId: string,
+    plans: Plan[],
+    currentPlan: Plan,
+    workoutWeek: any,
     getCurrentPlan: () => void,
     createNewPlan: (plan: any) => void,
     getAllPlans: () => void,
-    setCurrentPlan: (oldCurrentPlan: string, newCurrentPlan:string) => void,
+    changeCurrentPlan: (oldCurrentPlan: string, newCurrentPlan:string) => void,
     deletePlan: (id: string) => void,
     resetPlans: () => void,
+    updateWorkoutWeekFromCurrentPlan: (day:string, exercise:any) => void,
+    deleteExerciseFromWorkoutWeek: (day:string, exercise:any) => void,
+    resetWorkoutWeek: () => void,
+    resetCurrentPlan: () => void
 }
 
 const PlanContext = createContext<PlanContext>(
     {
         plans: [],
-        currentPlanId: '',
+        currentPlan: {
+            id: '',
+            name: '',
+            user_id: '',
+            created_at: new Date(),
+            week: {}
+        },
+        workoutWeek: {},
         getCurrentPlan: () => {},
         createNewPlan: (plan) => {},
         getAllPlans: () => {},
-        setCurrentPlan: (oldCurrentPlan, newCurrentPlan) => {},
+        changeCurrentPlan: (oldCurrentPlan, newCurrentPlan) => {},
         deletePlan: (id) => {},
         resetPlans: () => {},
+        updateWorkoutWeekFromCurrentPlan: (day, exercise) => {},
+        deleteExerciseFromWorkoutWeek: (day, exercise) => {},
+        resetWorkoutWeek: () => {},
+        resetCurrentPlan: () => {}
     },
 );
 
 export const PlanContextProvider = (props: any) => {
 
-    const workoutCtx = useContext(WorkoutContext);
     const userCtx = useContext(UserContext);
 
     const firestore = getFirestore(app);
 
     const [plans, setPlans] = useState<any>([])
+    const [workoutWeek, setWorkoutWeek] = useState<any>({})
 
-    const [currentPlanId, setCurrentPlanId] = useState<string>('')
+    const [currentPlan, setCurrentPlan] = useState({
+        id: '',
+        name: '',
+        user_id: '',
+        created_at: new Date(),
+        week: {}
+    })
 
     const getCurrentPlan = async () => {
-        console.log('getting current plan')
         const q = query(collection(firestore, "plans"), where("user_id", "==", userCtx.user.id), where("is_selected", "==", true));
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot)
         if (querySnapshot.empty) {
-            setCurrentPlanId(() => '')
+            setCurrentPlan(() => {
+                return {
+                    id: '',
+                    name: '',
+                    user_id: '',
+                    created_at: new Date(),
+                    week: {}
+                }
+            })
             return
         }
         querySnapshot.forEach((doc) => {
-            setCurrentPlanId(() => doc.id)
+            const returnedPlan: Plan = {
+                id: doc.id,
+                name: doc.data().name,
+                user_id: doc.data().user_id,
+                created_at: doc.data().created_at,
+                week: doc.data().week
+            }
+            setCurrentPlan(() => returnedPlan)
+            setWorkoutWeek(() => returnedPlan.week)
         })
     }
 
-    const setCurrentPlan = async (oldCurrentPlan: string, newCurrentPlan: string) => {
+    const changeCurrentPlan = async (oldCurrentPlan: string, newCurrentPlan: string) => {
         const docOldCurrRef = doc(firestore, "plans", oldCurrentPlan);
         await updateDoc(docOldCurrRef, {
             is_selected: false
@@ -70,7 +105,20 @@ export const PlanContextProvider = (props: any) => {
         await updateDoc(docNewCurrRef, {
             is_selected: true
         });
-        setCurrentPlanId(() => docNewCurrRef.id)
+        const docSnap = await getDoc(docNewCurrRef);
+        const data = await docSnap.data();
+        if (data) {
+            const newPlan: Plan = {
+                id: docSnap.id,
+                name: data.name,
+                user_id: data.user_id,
+                created_at: data.created_at,
+                week: data.week
+            }
+            setCurrentPlan(() => newPlan)
+            setWorkoutWeek(() => newPlan.week)
+        }
+
     }
 
     const getAllPlans = async () => {
@@ -99,6 +147,7 @@ export const PlanContextProvider = (props: any) => {
 
     const createNewPlan = async (plan: any) => {
         const newPlan = {
+            id: '',
             name: plan.name,
             user_id: plan.user_id,
             created_at: new Date(),
@@ -128,7 +177,8 @@ export const PlanContextProvider = (props: any) => {
             }
         }
 
-        await addDoc(collection(firestore, "plans"), newPlan);
+        const docRef = await addDoc(collection(firestore, "plans"), newPlan);
+        newPlan['id'] = docRef.id;
         setPlans((old: any) => [...old, newPlan])
     }
 
@@ -145,15 +195,85 @@ export const PlanContextProvider = (props: any) => {
         setPlans([])
     }
 
+    const updateWorkoutWeekFromCurrentPlan = async (day:string, exercise:any) => {
+        const docRef = doc(firestore, `plans/${currentPlan.id}`);
+        await updateDoc(docRef, {
+            week: {
+                ...workoutWeek,
+                [day]: {
+                    ...workoutWeek[day],
+                    exercises: [
+                        ...workoutWeek[day].exercises,
+                        exercise
+                    ]
+                }
+            }
+        })
+        setWorkoutWeek((old: any) => {
+            return {
+                ...old,
+                [day]: {
+                    ...old[day],
+                    exercises: [
+                        ...old[day].exercises,
+                        exercise
+                    ]
+                }
+            }
+        })
+    }
+
+    const deleteExerciseFromWorkoutWeek = async (day:string, exercise:any) => {
+        const newExercises = workoutWeek[day].exercises.filter((ex: any) => ex.name !== exercise.name)
+        const docRef = doc(firestore, `plans/${currentPlan.id}`);
+        await updateDoc(docRef, {
+            week: {
+                ...workoutWeek,
+                [day]: {
+                    ...workoutWeek[day],
+                    exercises: newExercises
+                }
+            }
+        })
+        setWorkoutWeek((old: any) => {
+            return {
+                ...old,
+                [day]: {
+                    ...old[day],
+                    exercises: newExercises
+                }
+            }
+        })
+    }
+
+    const resetWorkoutWeek = () => {
+        setWorkoutWeek({})
+    }
+
+    const resetCurrentPlan = () => {
+        setCurrentPlan({
+            id: '',
+            name: '',
+            user_id: '',
+            created_at: new Date(),
+            week: {}
+        },)
+    }
+
     const context: PlanContext = {
         createNewPlan,
         getCurrentPlan,
         plans,
-        currentPlanId,
+        currentPlan,
+        workoutWeek,
         getAllPlans,
-        setCurrentPlan,
+        changeCurrentPlan,
         deletePlan,
         resetPlans,
+        updateWorkoutWeekFromCurrentPlan,
+        deleteExerciseFromWorkoutWeek,
+        resetWorkoutWeek,
+        resetCurrentPlan
     }
 
     return (

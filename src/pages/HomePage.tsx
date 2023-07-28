@@ -4,7 +4,6 @@ import {Block, Button, Modal, Text} from 'react-barebones-ts'
 import ThemeContext from "../store/theme-context";
 import userContext from "../store/user-context";
 import PlanContext from "../store/plan-context";
-import WorkoutContext from "../store/workout-context";
 
 import {getDayOfTheWeek, getTomorrow, getYesterday} from "../helpers/date";
 
@@ -19,7 +18,6 @@ const HomePage = () => {
 
     const userCtx = useContext(userContext);
     const planCtx = useContext(PlanContext);
-    const workoutCtx = useContext(WorkoutContext);
 
     const themeCtx = useContext(ThemeContext);
 
@@ -72,8 +70,8 @@ const HomePage = () => {
     const handleShowNextDay = () => {
         const tomorrow = getTomorrow(date);
         setDate(tomorrow);
-        if (Object.keys(workoutCtx.workoutPlan).length > 0 && workoutCtx.workoutPlan[tomorrow].exercises.length > 0) {
-            setExerciseList(workoutCtx.workoutPlan[tomorrow].exercises)
+        if (Object.keys(planCtx.workoutWeek).length > 0 && planCtx.workoutWeek[tomorrow].exercises.length > 0) {
+            setExerciseList(planCtx.workoutWeek[tomorrow].exercises)
         } else {
             setExerciseList([])
         }
@@ -82,17 +80,17 @@ const HomePage = () => {
     const handleShowPrevDay = () => {
         const yesterday = getYesterday(date);
         setDate(yesterday);
-        if (Object.keys(workoutCtx.workoutPlan).length > 0 && workoutCtx.workoutPlan[yesterday].exercises.length > 0) {
-            setExerciseList(workoutCtx.workoutPlan[yesterday].exercises)
+        if (Object.keys(planCtx.workoutWeek).length > 0 && planCtx.workoutWeek[yesterday].exercises.length > 0) {
+            setExerciseList(planCtx.workoutWeek[yesterday].exercises)
         } else {
             setExerciseList([])
         }
     }
 
     useEffect(() =>{
-        if(userCtx.user.id !== '' && Object.keys(workoutCtx.workoutPlan).length > 0) {
-            if (workoutCtx.workoutPlan[date].exercises.length !== exerciseList.length) {
-                setExerciseList(workoutCtx.workoutPlan[date].exercises)
+        if(userCtx.user.id !== '' && planCtx.currentPlan.id !== '' && Object.keys(planCtx.workoutWeek).length > 0) {
+            if (planCtx.workoutWeek[date].exercises.length !== exerciseList.length) {
+                setExerciseList(planCtx.workoutWeek[date].exercises)
                 setLoading(false)
             } else {
                 setLoading(false)
@@ -103,7 +101,7 @@ const HomePage = () => {
         if (active === '' && exerciseList.length > 0) {
             setActive(exerciseList[0].name)
         }
-    }, [exerciseList, workoutCtx.workoutPlan, userCtx.user])
+    }, [exerciseList, planCtx.workoutWeek, planCtx.currentPlan, userCtx.user])
 
     return (
         <AppWrapper>
@@ -115,6 +113,7 @@ const HomePage = () => {
                     <ExerciseForm  dark={themeCtx.dark} day={date} setShowExerciseForm={setShowExerciseForm}/>
                 </Modal>
                 }
+                <Text type={'h3'} text={`Program: ${planCtx.currentPlan.name}`}/>
                 <Header dark={themeCtx.dark} date={date} handleShowNextDay={handleShowNextDay} handleShowPrevDay={handleShowPrevDay}/>
                 {restModal && <RestModal action={handleShowRestModal}/>}
                 {completedModal && <Modal dark={themeCtx.dark} title={'Workout completed'}  close={() => setCompletedModal(false)}> Well Done! </Modal>}

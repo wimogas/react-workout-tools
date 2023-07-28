@@ -71,12 +71,6 @@ const Register = () => {
                 if (userNow) {
                     updateProfile(userNow,{
                         displayName: user.name,
-                    }).then(function() {
-                        const newUser = {
-                            name: userNow.displayName,
-                            id: userNow.uid,
-                        }
-                        userCtx.createNewUser(newUser)
                     }).then( function() {
                         const newPlan = {
                             name: 'Template Plan',

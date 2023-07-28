@@ -1,10 +1,11 @@
 import React, {useContext, useState} from "react";
 import {Block, Button, Icon, Text} from "react-barebones-ts";
 
+import PlanContext from "../store/plan-context";
+
 import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 import CheckLine from "../assets/icons/check-line.svg";
 
-import WorkoutContext from "../store/workout-context";
 import ConfirmDelete from "./ConfirmDelete";
 
 type ExerciseProps = {
@@ -19,7 +20,7 @@ type ExerciseProps = {
 
 const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButtonAction}: ExerciseProps) => {
 
-    const workoutCtx = useContext(WorkoutContext);
+    const planCtx = useContext(PlanContext);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const setBuilder = (exercise: any) => {
@@ -41,7 +42,7 @@ const Exercise = ({day, dark, exercise, done, active, activeSet, handleSetButton
     const returnedSets = setBuilder(exercise);
 
     const handleConfirmDelete = (exercise: string) => {
-        workoutCtx.deleteExerciseFromWorkoutPlan(day, exercise)
+        planCtx.deleteExerciseFromWorkoutWeek(day, exercise)
         setShowDeleteModal(false)
     }
 

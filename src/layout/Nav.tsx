@@ -5,20 +5,18 @@ import {auth} from '../firebase';
 
 import userContext from "../store/user-context";
 import ThemeContext from "../store/theme-context";
-import WorkoutContext from "../store/workout-context";
 import PlanContext from "../store/plan-context";
 
 import SunIcon from '../assets/icons/sun-fill.svg';
 import MoonIcon from '../assets/icons/moon-fill.svg';
 import LogoutIcon from '../assets/icons/logout-box-r-line.svg';
 
-import {Block, Button, Text} from 'react-barebones-ts'
+import {Block, Button, Dropdown, Text} from 'react-barebones-ts'
 
 const Nav = () => {
 
     const userCtx = useContext(userContext)
     const themeCtx = useContext(ThemeContext);
-    const workoutCtx = useContext(WorkoutContext)
     const planCtx = useContext(PlanContext)
 
     const [redirect, setRedirect] = useState(false)
@@ -33,8 +31,9 @@ const Nav = () => {
                 name: '',
                 id: ''
             })
-            workoutCtx.resetWorkoutPlan()
+            planCtx.resetWorkoutWeek()
             planCtx.resetPlans()
+            planCtx.resetCurrentPlan()
             setRedirect(true)
         }).catch((error) => {
             console.log(error);
