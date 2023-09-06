@@ -10,13 +10,13 @@ This App is a collection of tools to help you with your workout.
 - [x] Track Sets for each exercise
 - [x] Show Rest countdown timer after each Set
 - [x] Navigate through different workouts of the week
+- [x] Create a Workout Plan
+- [x] Add, edit, delete exercises from a Workout Plan
+- [x] Configure Sets, Reps, Weight, Rest for each exercise
+- [x] Save your Workout Plans
 
 ## Coming soon
 
-- [ ] Create a Workout Plan
-- [ ] Add exercises to a Workout Plan
-- [ ] Configure Sets, Reps, Weight, Rest for each exercise
-- [ ] Save your Workout Plans
 - [ ] Track your progress (Dashboard analytics)
 - [ ] Publish and share your Workout Plans
 - [ ] Search for Workout Plans
