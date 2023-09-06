@@ -120,8 +120,9 @@ const HomePage = () => {
 
                 <Block column size={400} classes={'bb-w-100'}>
                 {loading && <Spinner />}
-                {!loading && exerciseList.length > 0 && exerciseList.map((exercise: any) => {
+                {!loading && exerciseList.length > 0 && exerciseList.map((exercise: any, index) => {
                     return <Exercise
+                        index={index}
                         day={date}
                         dark={themeCtx.dark}
                         key={exercise.name}
@@ -129,7 +130,8 @@ const HomePage = () => {
                         active={active}
                         activeSet={activeSet}
                         done={done}
-                        handleSetButtonAction={handleSetButtonAction}/>
+                        handleSetButtonAction={handleSetButtonAction}
+                        setExerciseList={setExerciseList}/>
                 })}
                     {!loading && exerciseList.length === 0 &&
                         <Block classes={'bb-w-100'}>

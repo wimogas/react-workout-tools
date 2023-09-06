@@ -5,28 +5,35 @@ import {Button, Block, Input, Alert} from 'react-barebones-ts'
 import Spinner from "./spinner/Spinner";
 import PlanContext from "../store/plan-context";
 
-type NewExercise = {
+type updatedExercise = {
     name: string,
     sets: string,
     reps: string,
     weight: string
 }
 
-type ExerciseFormProps = {
+type EditModalProps = {
+    index: number,
     day: string,
-    setShowExerciseForm: (show: boolean) => void,
-    dark: boolean
+    exercise: {
+        name: string,
+        sets: number,
+        reps: number,
+        weight: number
+    },
+    setShowEditModal: (show: boolean) => void,
+    setExerciseList: any
 }
 
-const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => {
+const EditForm = ({ index, day, exercise, setShowEditModal, setExerciseList }: EditModalProps) => {
 
     const planCtx = useContext(PlanContext);
 
-    const [exercise, setExercise] = useState<NewExercise>({
-        name: '',
-        sets: '',
-        reps: '',
-        weight: ''
+    const [updatedExercise, setUpdatedExercise] = useState<updatedExercise>({
+        name: exercise.name,
+        sets: exercise.sets.toString(),
+        reps: exercise.reps.toString(),
+        weight: exercise.weight.toString()
     })
 
     const [alert, setAlert] = useState("Something went wrong")
@@ -34,7 +41,7 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
     const [errors, setErrors] = useState(false)
     const [loading, setLoading] = useState(false)
     const handleChangeField = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setExercise((user: any) => ({
+        setUpdatedExercise((user: any) => ({
             ...user,
             [e.target.name]: e.target.value
         }))
@@ -53,16 +60,17 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
             return
         }
 
-        const newExercise = {
-            name: exercise.name,
-            sets: parseInt(exercise.sets),
-            reps: parseInt(exercise.reps),
-            weight: parseInt(exercise.weight)
+        const newUpdatedExercise = {
+            name: updatedExercise.name,
+            sets: parseInt(updatedExercise.sets),
+            reps: parseInt(updatedExercise.reps),
+            weight: parseInt(updatedExercise.weight)
         }
 
-        await planCtx.addExercise(day, newExercise);
+        await planCtx.editExercise(day, index, newUpdatedExercise);
+        setExerciseList([])
         setLoading(false)
-        setShowExerciseForm(false)
+        setShowEditModal(false)
     }
 
 
@@ -76,7 +84,7 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
             <form style={{"width": "100%"}} onSubmit={(e: React.SyntheticEvent<HTMLFormElement>) => handleSubmit(e)}>
                 <Block column size={400}>
                     <Block column size={400}>
-                        {Object.entries(exercise).map(([key, value]) => {
+                        {Object.entries(updatedExercise).map(([key, value]) => {
                             return (
                                 <Input
                                     label={key}
@@ -94,7 +102,7 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
                         <Button
                             variant='tertiary'
                             dark
-                            action={() => setShowExerciseForm(false)}
+                            action={() => setShowEditModal(false)}
                         >
                             Cancel
                         </Button>
@@ -105,7 +113,7 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
                             icon={loading && <Spinner/>}
                             dark
                         >
-                            Add Exercise
+                            Update Exercise
                         </Button>
                     </Block>
                 </Block>
@@ -114,4 +122,4 @@ const ExerciseForm = ({ day, dark, setShowExerciseForm }: ExerciseFormProps) => 
     )
 }
 
-export default ExerciseForm;
+export default EditForm;
