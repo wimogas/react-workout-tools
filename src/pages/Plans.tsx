@@ -58,6 +58,7 @@ const Plans = () => {
                             plan={plan}
                             dark={themeCtx.dark}
                             workoutPlanId={''}
+                            setPlans={setPlans}
                             />
                     })}
                 </Grid>

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Block, Button, Text} from "react-barebones-ts";
+import {Block, Button, Modal, Text} from "react-barebones-ts";
 
 import PlanContext from "../store/plan-context";
 
@@ -8,19 +8,23 @@ import DeleteIcon from "../assets/icons/delete-bin-line.svg";
 
 import ConfirmDelete from "./ConfirmDelete";
 import userContext from "../store/user-context";
+import EditForm from "./EditForm";
+import EditPlanForm from "./EditPlanForm";
 
 type PlanProps = {
     dark: boolean,
     plan: any,
     workoutPlanId: string,
+    setPlans: any,
 }
-const Plan = ({plan, dark  }: PlanProps) => {
+const Plan = ({plan, dark, setPlans  }: PlanProps) => {
 
     const planCtx = useContext(PlanContext)
 
     const [isSelected, setIsSelected] = useState(false)
 
     const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showEditModal, setShowEditModal] = useState(false)
 
     const handleEditName = () => {
 
@@ -51,6 +55,17 @@ const Plan = ({plan, dark  }: PlanProps) => {
                 dark={dark}
                 handleConfirmDelete={() => handleConfirmDelete(plan.id)}
             />}
+            {showEditModal && <Modal
+                dark={dark}
+                title={'Update Plan'}
+                close={() => setShowEditModal(false)}>
+                <EditPlanForm
+                    id={plan.id}
+                    name={plan.name}
+                    setPlans={setPlans}
+                    setShowEditModal={setShowEditModal}
+                />
+            </Modal> }
             <Block
                 variant={'card'}
                 dark={dark}
@@ -58,11 +73,11 @@ const Plan = ({plan, dark  }: PlanProps) => {
                 column
                 size={400}>
                 <Block justify={'space-between'} classes={'bb-w-100'}>
+                    <Text type={'h3'} text={plan.name}/>
                     <Block size={200}>
-                        <Text type={'h3'} text={plan.name}/>
-                        <Button variant={'icon-only'} icon={<EditIcon/>} iconSize={24} dark={dark} action={handleEditName}/>
+                        <Button variant={'icon-only'} icon={<EditIcon/>} iconSize={24} dark={dark} action={() => setShowEditModal(true)}/>
+                        {!isSelected && <Button variant={'icon-only'} icon={<DeleteIcon/>} iconSize={24} dark={dark} action={() => setShowDeleteModal(true)}/>}
                     </Block>
-                    {!isSelected && <Button variant={'icon-only'} icon={<DeleteIcon/>} iconSize={24} dark={dark} action={() => setShowDeleteModal(true)}/>}
                 </Block>
 
                 <Block>

@@ -25,7 +25,8 @@ type PlanContext = {
     deleteExercise: (day:string, exercise:any) => void,
     editExercise: (day:string, index:number, exercise:any) => void,
     resetWorkoutWeek: () => void,
-    resetCurrentPlan: () => void
+    resetCurrentPlan: () => void,
+    updatePlan: (plan: any) => void
 }
 
 const PlanContext = createContext<PlanContext>(
@@ -49,7 +50,8 @@ const PlanContext = createContext<PlanContext>(
         deleteExercise: (day, exercise) => {},
         editExercise: (day, index, exercise) => {},
         resetWorkoutWeek: () => {},
-        resetCurrentPlan: () => {}
+        resetCurrentPlan: () => {},
+        updatePlan: (plan) => {}
     },
 );
 
@@ -185,6 +187,24 @@ export const PlanContextProvider = (props: any) => {
     }
 
     const updatePlan = async (plan: Plan) => {
+        const docRef = doc(firestore, "plans", plan.id);
+        await updateDoc(docRef, {
+            name: plan.name
+        });
+        setPlans((old: any) => old.map((p: Plan) => {
+            if (p.id === plan.id) {
+                const updatedPlan: Plan = {
+                    id: p.id,
+                    name: plan.name,
+                    user_id: p.user_id,
+                    created_at: p.created_at,
+                    week: p.week
+                }
+                return updatedPlan
+            } else {
+                return p
+            }
+        }   ))
 
     }
 
@@ -305,8 +325,8 @@ export const PlanContextProvider = (props: any) => {
         deleteExercise,
         editExercise,
         resetWorkoutWeek,
-        resetCurrentPlan
-    }
+        resetCurrentPlan,
+        updatePlan    }
 
     return (
         <PlanContext.Provider value={context}>
